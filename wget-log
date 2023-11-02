@@ -1,0 +1,18 @@
+--2021-11-08 17:35:36--  https://sourceforge.net/projects/xampp/files/XAMPP%20Linux/7.4.7/xampp-linux-x64-7.4.7-0-installer.run/download
+Resolving sourceforge.net (sourceforge.net)... 204.68.111.105
+Connecting to sourceforge.net (sourceforge.net)|204.68.111.105|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: https://downloads.sourceforge.net/project/xampp/XAMPP%20Linux/7.4.7/xampp-linux-x64-7.4.7-0-installer.run?ts=gAAAAABhiRmd0ikZV5Yv4uojunwvAG79VQzL8HXKelDLBelfTwFmfN6LhGAMI57pmJbjzT-KALEUWlLDd5B-Yhk0kVhloxOyjQ%3D%3D&use_mirror=liquidtelecom&r= [following]
+--2021-11-08 17:35:41--  https://downloads.sourceforge.net/project/xampp/XAMPP%20Linux/7.4.7/xampp-linux-x64-7.4.7-0-installer.run?ts=gAAAAABhiRmd0ikZV5Yv4uojunwvAG79VQzL8HXKelDLBelfTwFmfN6LhGAMI57pmJbjzT-KALEUWlLDd5B-Yhk0kVhloxOyjQ%3D%3D&use_mirror=liquidtelecom&r=
+Resolving downloads.sourceforge.net (downloads.sourceforge.net)... 204.68.111.105
+Connecting to downloads.sourceforge.net (downloads.sourceforge.net)|204.68.111.105|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: https://liquidtelecom.dl.sourceforge.net/project/xampp/XAMPP%20Linux/7.4.7/xampp-linux-x64-7.4.7-0-installer.run [following]
+--2021-11-08 17:35:43--  https://liquidtelecom.dl.sourceforge.net/project/xampp/XAMPP%20Linux/7.4.7/xampp-linux-x64-7.4.7-0-installer.run
+Resolving liquidtelecom.dl.sourceforge.net (liquidtelecom.dl.sourceforge.net)... 197.155.77.8
+Connecting to liquidtelecom.dl.sourceforge.net (liquidtelecom.dl.sourceforge.net)|197.155.77.8|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 161396292 (154M) [application/x-makeself]
+Saving to: ‘xampp-installer.run’
+
+xampp-installer.run   3%[                    ]   5.16M  4.71KB/s    eta 9h 11m xampp-installer.run   3%[                    ]   5.18M  4.72KB/s    eta 9h 10m 
