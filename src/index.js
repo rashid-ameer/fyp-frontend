@@ -24,19 +24,19 @@ import reportWebVitals from './reportWebVitals';
 // ----------------------------------------------------------------------
 
 ReactDOM.render(
-  <StrictMode>
-    <HelmetProvider>
-      <SettingsProvider>
-        <CollapseDrawerProvider>
-          <BrowserRouter>
-            <AuthProvider>
-              <App />
-            </AuthProvider>
-          </BrowserRouter>
-        </CollapseDrawerProvider>
-      </SettingsProvider>
-    </HelmetProvider>
-  </StrictMode>,
+  // <StrictMode>
+  <HelmetProvider>
+    <SettingsProvider>
+      <CollapseDrawerProvider>
+        <BrowserRouter>
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        </BrowserRouter>
+      </CollapseDrawerProvider>
+    </SettingsProvider>
+  </HelmetProvider>,
+  // </StrictMode>
   document.getElementById('root')
 );
 

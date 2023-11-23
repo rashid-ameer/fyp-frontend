@@ -3,61 +3,66 @@ import { Icon } from '@iconify/react';
 import { sentenceCase } from 'change-case';
 import React, { useState, useEffect } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
-import roundFilterList from '@iconify/icons-ic/round-filter-list';
-
 import { Link as RouterLink } from 'react-router-dom';
 
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useTheme, styled, alpha } from '@mui/material/styles';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import EditIcon from '@mui/icons-material/Edit';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import Divider from '@mui/material/Divider';
 import AddIcon from '@mui/icons-material/Add';
+import ArchiveIcon from '@mui/icons-material/Archive';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 // material
 // import { useTheme } from '@mui/material/styles'; // important
 import {
   Card,
-  IconButton,
   Table,
   Stack,
-  TextField,
-  Tooltip,
   Avatar,
+  TextField,
   Button,
   Checkbox,
   TableRow,
   TableBody,
   TableCell,
+  Toolbar,
   Container,
+  IconButton,
   Typography,
   TableContainer,
-  Toolbar,
   TablePagination
 } from '@mui/material';
 // redux
-import { useDispatch, useSelector } from '../../redux/store';
-import { getUserList, showAllUsersByBatch, getUserByRole, deleteUser } from '../../redux/slices/user';
-import { getBatchesList } from '../../redux/slices/batch';
-import { getRoleList } from '../../redux/slices/role';
+import useAuth from '../hooks/useAuth';
+import { useDispatch, useSelector } from '../redux/store';
+import { getBatchesList, deleteBatch } from '../redux/slices/batch';
+import { showAllGroupsUnderSupervisionsByBatch, deleteGroup, getGroupUnderSupervision } from '../redux/slices/group';
+import { getInstructorList } from '../redux/slices/instructor';
 // routes
-import { PATH_DASHBOARD } from '../../routes/paths';
+import { PATH_DASHBOARD } from '../routes/paths';
 // hooks
-import useSettings from '../../hooks/useSettings';
+import useSettings from '../hooks/useSettings';
 // components
-import Page from '../../components/Page';
-import Label from '../../components/Label';
-import Scrollbar from '../../components/Scrollbar';
-import SearchNotFound from '../../components/SearchNotFound';
-import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
-import { UserListHead, UserListToolbar, UserMoreMenu } from '../../components/_dashboard/user/list';
+import Page from '../components/Page';
+import Label from '../components/Label';
+import Scrollbar from '../components/Scrollbar';
+import SearchNotFound from '../components/SearchNotFound';
+import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
+import { UserListHead, UserListToolbar, GroupsUnderSupervisionMoreMenu } from '../components/_dashboard/user/list';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', alignRight: false },
-  { id: 'cmsId', label: 'CMS ID', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
+  { id: 'name', label: 'Proposed Title', alignRight: false },
+  { id: 'cmsId', label: 'Group Member 1', alignRight: false },
+  { id: 'cmsId', label: 'Group Member 2', alignRight: false },
+  { id: 'cmsId', label: 'Group Member 3', alignRight: false },
+  { id: 'role', label: 'Batch', alignRight: false },
+  // { id: 'status', label: 'Group Approval', alignRight: false },
   { id: '' }
 ];
 
@@ -88,18 +93,19 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user.project_title.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function UserList() {
+export default function PageGroupsUnderCommittee() {
   const { themeStretch } = useSettings();
   const theme = useTheme();
   const dispatch = useDispatch();
-  const { userList } = useSelector((state) => state.user);
-  const { roleList } = useSelector((state) => state.role);
+  const { groupList } = useSelector((state) => state.group);
   const { batchesList } = useSelector((state) => state.batch);
+  const { userList } = useSelector((state) => state.instructor);
+  const { user } = useAuth();
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
@@ -108,8 +114,7 @@ export default function UserList() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
-    dispatch(getUserList());
-    dispatch(getRoleList());
+    dispatch(getGroupUnderSupervision(user.id));
     dispatch(getBatchesList());
   }, [dispatch]);
 
@@ -121,7 +126,7 @@ export default function UserList() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = userList.map((n) => n.name);
+      const newSelecteds = groupList.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -157,33 +162,24 @@ export default function UserList() {
   };
 
   const handleDeleteUser = (userId) => {
-    dispatch(deleteUser(userId));
+    dispatch(deleteGroup(userId));
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - userList.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - groupList.length) : 0;
 
-  const filteredUsers = applySortFilter(userList, getComparator(order, orderBy), filterName);
+  const filteredUsers = applySortFilter(groupList, getComparator(order, orderBy), filterName);
 
   const isUserNotFound = filteredUsers.length === 0;
 
   // ****************
 
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick_ = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose_ = () => {
     setAnchorEl(null);
-  };
-
-  const [anchorEl1, setAnchorEl1] = useState(null);
-  const open1 = Boolean(anchorEl1);
-  const handleClick1_ = (event) => {
-    setAnchorEl1(event.currentTarget);
-  };
-  const handleClose1_ = () => {
-    setAnchorEl1(null);
   };
 
   // **** styled menu
@@ -225,156 +221,82 @@ export default function UserList() {
   }));
 
   // ***************
-  // const [roleState, setRoleState] =useState('');
-  const RoleFilterHandler = (e) => {
-    setSelectRole(e.target.value);
-    const a = e.target.value === 'Student' ? showBatchStatus(true) : showBatchStatus(false);
-    if (e.target.value === 'All') {
-      dispatch(getUserList());
+  const getColor = (status) => {
+    let result;
+    if (status === 0) {
+      result = 'warning';
+    } else if (status === 1) {
+      result = 'success';
     } else {
-      dispatch(getUserByRole(roleList?.find((role) => role.role_name === e.target.value).id));
+      result = 'error';
     }
+    return result;
   };
-
-  const getByBatch = (e) => {
-    setSelectBatch(e.target.value);
-    if (e.target.value === 'All') {
-      dispatch(getUserByRole(roleList?.find((role) => role.role_name === selectRole).id));
+  const getGroupStatus = (status) => {
+    let result;
+    if (status === 0) {
+      result = 'Inprogress';
+    } else if (status === 1) {
+      result = 'Approved';
     } else {
-      dispatch(showAllUsersByBatch(batchesList.find((batch) => batch.batch === e.target.value).id));
+      result = 'Rejected';
     }
+    return result;
   };
+  const [batchState, setBatchState] = useState('All');
   const RootStyle = styled(Toolbar)(({ theme }) => ({
     height: 96,
     display: 'flex',
     justifyContent: 'space-between',
     padding: theme.spacing(0, 1, 0, 3)
   }));
-  const [selectBatch, setSelectBatch] = useState('All');
-  const [batchStatus, showBatchStatus] = useState(false);
-  const [selectRole, setSelectRole] = useState('All');
+  const batchSelectHandler = (e) => {
+    setBatchState(e.target.value);
+    if (e.target.value === 'All') {
+      dispatch(getGroupUnderSupervision(user.id));
+    } else {
+      dispatch(
+        showAllGroupsUnderSupervisionsByBatch(user.id, batchesList?.find((batch) => batch.batch === e.target.value)?.id)
+      );
+    }
+  };
+  const getSupervisorName = (row) => {
+    const id = row.supervisor_id ? row.supervisor_id : -1;
+    let result = '';
+    if (id === -1) {
+      result = 'Not Available';
+    } else {
+      const data = userList.find((user) => user.id === id);
+      result = data?.user.name || 'Not Available';
+    }
+    return result;
+  };
   return (
     <Page title="User: List | SIBAU FYPMS">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="User List"
-          links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'User', href: PATH_DASHBOARD.user.list },
-            { name: 'List' }
-          ]}
-          action={
-            <div className="row bg-success">
-              {/* ******************** */}
-
-              <div>
-                <Button
-                  startIcon={<AddIcon />}
-                  id="demo-customized-button"
-                  aria-controls="demo-customized-menu"
-                  aria-haspopup="true"
-                  aria-expanded={open ? 'true' : undefined}
-                  variant="contained"
-                  disableElevation
-                  onClick={handleClick_}
-                >
-                  New User
-                </Button>
-                <StyledMenu
-                  id="demo-customized-menu"
-                  MenuListProps={{
-                    'aria-labelledby': 'demo-customized-button'
-                  }}
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={handleClose_}
-                >
-                  <MenuItem
-                    variant="contained"
-                    component={RouterLink}
-                    to={PATH_DASHBOARD.user.newStudent}
-                    startIcon={<Icon icon={plusFill} />}
-                  >
-                    Student
-                  </MenuItem>
-                  <MenuItem
-                    variant="contained"
-                    component={RouterLink}
-                    to={PATH_DASHBOARD.user.newSupervisor}
-                    startIcon={<Icon icon={plusFill} />}
-                  >
-                    Supervisor
-                  </MenuItem>
-                  {/* <Divider sx={{ my: 0.5 }} />  */}
-                </StyledMenu>
-              </div>
-
-              {/* *************************** */}
-
-              {/* <div className="col-5">
-                <Button
-                  variant="contained"
-                  component={RouterLink}
-                  to={PATH_DASHBOARD.user.newStudent}
-                  startIcon={<Icon icon={plusFill} />}
-                >
-                  New Student
-                </Button>
-              </div>
-              <div className="col-2">
-                <br />
-              </div>
-              <div className="col-5">
-                <Button
-                  variant="contained"
-                  component={RouterLink}
-                  to={PATH_DASHBOARD.user.newSupervisor}
-                  startIcon={<Icon icon={plusFill} />}
-                >
-                  New Supervisor
-                </Button>
-              </div> */}
-            </div>
-          }
+          heading="Groups Under Supervision"
+          links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Groups' }]}
         />
 
         <Card>
           <RootStyle>
             <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
 
-            <RootStyle>
-              {batchStatus ? (
-                <TextField
-                  select
-                  style={{ width: '150px' }}
-                  label="Select Batch"
-                  placeholder="Select Batch"
-                  SelectProps={{ native: true }}
-                  value={selectBatch}
-                  onChange={(e) => getByBatch(e)}
-                >
-                  <option>All</option>
-                  {batchesList.map((row) => (
-                    <option key={row.batch}>{row.batch}</option>
-                  ))}
-                </TextField>
-              ) : null}
-              <p>&nbsp;&nbsp;&nbsp;</p>
-              <TextField
-                select
-                style={{ width: '150px' }}
-                label="Filter By Role"
-                placeholder="Filter By Role"
-                SelectProps={{ native: true }}
-                value={selectRole}
-                onChange={(e) => RoleFilterHandler(e)}
-              >
-                <option>All</option>
-                {roleList.map((row) => (
-                  <option key={row.role_name}>{row.role_name}</option>
-                ))}
-              </TextField>
-            </RootStyle>
+            <TextField
+              select
+              style={{ width: '250px' }}
+              label="Select Batch"
+              placeholder="Select Batch"
+              value={batchState}
+              SelectProps={{ native: true }}
+              onChange={(e) => batchSelectHandler(e)}
+            >
+              <option>All</option>
+              {batchesList.map((row) => (
+                <option>{row.batch}</option>
+              ))}
+            </TextField>
           </RootStyle>
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
@@ -383,14 +305,14 @@ export default function UserList() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={userList.length}
+                  rowCount={groupList.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const isItemSelected = selected.indexOf(row.name) !== -1;
+                    const isItemSelected = selected.indexOf(row.id) !== -1;
 
                     return (
                       <TableRow
@@ -402,37 +324,43 @@ export default function UserList() {
                         aria-checked={isItemSelected}
                       >
                         <TableCell padding="checkbox">
-                          <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, row.name)} />
+                          <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, row.id)} />
                         </TableCell>
                         <TableCell component="th" scope="row" padding="none">
                           <Stack direction="row" alignItems="center" spacing={2}>
-                            <Avatar alt={row.name} src={row.imgUrl} />
                             <Typography variant="subtitle2" noWrap>
-                              {row.name}
+                              {row.project_title}
                             </Typography>
                           </Stack>
                         </TableCell>
-                        <TableCell align="left">{row.user_name}</TableCell>
-                        <TableCell align="left">{row.role.role_name}</TableCell>
                         <TableCell align="left">
-                          <Label
-                            variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                            color={row.is_varified === 0 ? 'error' : 'success'}
-                          >
-                            {row.is_varified === 1 ? 'Verified' : 'Not Verified'}
-                          </Label>
+                          <p>{row.students[0]?.user.name || 'Not Available'}</p>
+                          <p>{row.students[0]?.user_id}</p>
                         </TableCell>
                         <TableCell align="left">
-                          <Label
-                            variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                            color={(row.isActive === 0 && 'error') || 'success'}
-                          >
-                            {sentenceCase(row.isActive === 1 ? 'Active' : 'Not Active')}
+                          <p>{row.students[1]?.user.name || 'Not Available'}</p>
+                          <p>{row.students[1]?.user_id || ''}</p>
+                        </TableCell>
+                        <TableCell align="left">
+                          <p>{row.students[2]?.user.name || 'Not Available'}</p>
+                          <p>{row.students[2]?.user_id || ''}</p>
+                        </TableCell>
+                        <TableCell align="left">
+                          <Label variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}>
+                            {batchesList?.find((batch) => batch.id === row.students[0]?.batch_id)?.batch}
                           </Label>
                         </TableCell>
+                        {/* <TableCell align="left">
+                          <Label
+                            variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
+                            color={getColor(row.groupStatus)}
+                          >
+                            {sentenceCase(getGroupStatus(row.groupStatus))}
+                          </Label>
+                        </TableCell> */}
 
                         <TableCell align="right">
-                          <UserMoreMenu onDelete={() => handleDeleteUser(row.id)} userName={row} />
+                          <GroupsUnderSupervisionMoreMenu onDelete={() => handleDeleteUser(row.id)} userName={row} />
                         </TableCell>
                       </TableRow>
                     );
@@ -455,11 +383,10 @@ export default function UserList() {
               </Table>
             </TableContainer>
           </Scrollbar>
-
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={userList.length}
+            count={groupList.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

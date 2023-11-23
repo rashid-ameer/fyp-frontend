@@ -39,6 +39,8 @@ const ICONS = {
   analytics: getIcon('ic_analytics'),
   dashboard: getIcon('ic_dashboard')
 };
+
+console.log(PATH_DASHBOARD.general.appPage);
 const sidebarConfig = [
   // GENERAL
   // ----------------------------------------------------------------------
@@ -75,6 +77,12 @@ const sidebarConfig = [
       {
         title: 'Groups Under Supervision',
         path: PATH_DASHBOARD.general.groupsUnderSupervision,
+        roleP: ['Coordinator', 'Supervisor', 'Super Admin'],
+        icon: <Groups color="primary" />
+      },
+      {
+        title: 'Groups Under Committee',
+        path: PATH_DASHBOARD.general.groupsUnderCommittee,
         roleP: ['Coordinator', 'Supervisor', 'Super Admin'],
         icon: <Groups color="primary" />
       },
@@ -128,6 +136,12 @@ const sidebarConfig = [
         title: 'User Management',
         path: PATH_DASHBOARD.user.list,
         roleP: ['Coordinator', 'Super Admin'],
+        icon: <ManageAccounts color="primary" />
+      },
+      {
+        title: 'Committee Management',
+        path: PATH_DASHBOARD.committee.list,
+        roleP: ['Super Admin', 'Coordinator'],
         icon: <ManageAccounts color="primary" />
       },
       {

@@ -38,6 +38,7 @@ export const PATH_DASHBOARD = {
 
     viewGroups: path(ROOTS_DASHBOARD, '/viewgroups'),
     groupsUnderSupervision: path(ROOTS_DASHBOARD, '/groups-under-supervision'),
+    groupsUnderCommittee: path(ROOTS_DASHBOARD, '/groups-under-committee'),
     assignSupervisors: path(ROOTS_DASHBOARD, '/assignsupervisors'),
     assignWork: path(ROOTS_DASHBOARD, '/assignwork'),
     projectsArchive: path(ROOTS_DASHBOARD, '/projectsarchive'),
@@ -71,5 +72,10 @@ export const PATH_DASHBOARD = {
     newBatch: path(ROOTS_DASHBOARD, '/user/newbatch'),
     editById: path(ROOTS_DASHBOARD, `/user/reece-chung/edit`),
     account: path(ROOTS_DASHBOARD, '/user/account')
+  },
+  committee: {
+    root: path(ROOTS_DASHBOARD, '/committee'),
+    list: path(ROOTS_DASHBOARD, '/committee/list'),
+    newCommittee: path(ROOTS_DASHBOARD, '/committee/newcommittee')
   }
 };

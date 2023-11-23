@@ -102,7 +102,7 @@ export default function Router() {
       path: 'dashboard',
       element: <DashboardLayout />,
       children: [
-        { element: <Navigate to="/dashboard/homepage" replace /> },
+        { path: '', element: <Navigate to="/dashboard/homepage" replace /> },
         {
           path: 'homepage',
           element: (
@@ -166,6 +166,14 @@ export default function Router() {
           element: (
             <Provider store={store}>
               <PageGroupsUnderSupervision />
+            </Provider>
+          )
+        },
+        {
+          path: 'groups-under-committee',
+          element: (
+            <Provider store={store}>
+              <PageGroupsUnderCommittee />
             </Provider>
           )
         },
@@ -391,6 +399,27 @@ export default function Router() {
               )
             }
           ]
+        },
+        {
+          path: 'committee',
+          children: [
+            {
+              path: 'list',
+              element: (
+                <Provider store={store}>
+                  <CommitteeList />
+                </Provider>
+              )
+            },
+            {
+              path: 'newcommittee',
+              element: (
+                <Provider store={store}>
+                  <CommitteeCreate />
+                </Provider>
+              )
+            }
+          ]
         }
       ]
     },
@@ -426,6 +455,7 @@ const PageManageUsers = Loadable(lazy(() => import('../pages/PageManageUsers')))
 const PageCreateGroup = Loadable(lazy(() => import('../pages/PageCreateGroup')));
 const PageGroups = Loadable(lazy(() => import('../pages/PageGroups')));
 const PageGroupsUnderSupervision = Loadable(lazy(() => import('../pages/PageGroupsUnderSupervision')));
+const PageGroupsUnderCommittee = Loadable(lazy(() => import('../pages/PageGroupsUnderSupervision')));
 
 const PageProjectsArchive = Loadable(lazy(() => import('../pages/PageProjectsArchive')));
 const PageCreateReports = Loadable(lazy(() => import('../pages/PageCreateReports')));
@@ -458,6 +488,9 @@ const PageViewAnnouncements = Loadable(lazy(() => import('../pages/PageViewAnnou
 
 const UserCards = Loadable(lazy(() => import('../pages/dashboard/UserCards')));
 const StudentCreate = Loadable(lazy(() => import('../pages/dashboard/StudentCreate')));
+const CommitteeCreate = Loadable(lazy(() => import('../pages/dashboard/CommitteeCreate')));
+
+const CommitteeList = Loadable(lazy(() => import('../pages/dashboard/CommitteeList')));
 
 const NotFound = Loadable(lazy(() => import('../pages/Page404')));
 // Main
