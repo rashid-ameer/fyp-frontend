@@ -160,7 +160,7 @@ export default function CommitteeList() {
     <Page title="User: List | SIBAU FYPMS ">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="User Role"
+          heading="Committee"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             { name: 'Committee', href: PATH_DASHBOARD.committee.list },

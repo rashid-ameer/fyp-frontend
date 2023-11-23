@@ -42,7 +42,7 @@ export default function CommitteeMoreMenu({ onDelete, userName }) {
 
         <MenuItem
           component={RouterLink}
-          to={`${PATH_DASHBOARD.user.root}/${paramCase(userName)}/roleedit`}
+          to={`${PATH_DASHBOARD.committee.root}/${paramCase(userName)}/committee-edit`}
           sx={{ color: 'text.secondary' }}
         >
           <ListItemIcon>

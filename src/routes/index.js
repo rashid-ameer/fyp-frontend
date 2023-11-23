@@ -418,6 +418,14 @@ export default function Router() {
                   <CommitteeCreate />
                 </Provider>
               )
+            },
+            {
+              path: ':name/committee-edit',
+              element: (
+                <Provider store={store}>
+                  <CommitteeCreate />
+                </Provider>
+              )
             }
           ]
         }
