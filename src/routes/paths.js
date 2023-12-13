@@ -44,7 +44,6 @@ export const PATH_DASHBOARD = {
     projectsArchive: path(ROOTS_DASHBOARD, '/projectsarchive'),
     reports: path(ROOTS_DASHBOARD, '/reports'),
     createReport: path(ROOTS_DASHBOARD, '/createreport'),
-
     submitReports: path(ROOTS_DASHBOARD, '/submitreports')
   },
   app: {

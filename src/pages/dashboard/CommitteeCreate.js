@@ -60,7 +60,7 @@ export default function CommitteeCreate() {
   }, [dispatch]);
 
   return (
-    <Page title="User: Add a new Student | SIBAU FYPMS">
+    <Page title="Committee: Create New Committee  | SIBAU FYPMS">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
           heading={!isEdit ? 'Add a New Committee' : 'Edit Committee'}

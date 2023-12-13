@@ -194,8 +194,14 @@ export default function Router() {
             </Provider>
           )
         },
-        { path: 'projectsarchive', element: <PageProjectsArchive /> },
-        // { path: 'viewreports', element: <PageViewReports /> },
+        {
+          path: 'projectsarchive',
+          element: (
+            <Provider store={store}>
+              <PageProjectsArchive />
+            </Provider>
+          )
+        },
         {
           path: 'reports',
           element: (

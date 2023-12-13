@@ -157,7 +157,7 @@ export default function CommitteeList() {
   const isUserNotFound = filteredUsers.length === 0;
 
   return (
-    <Page title="User: List | SIBAU FYPMS ">
+    <Page title="Committee: List | SIBAU FYPMS ">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
           heading="Committee"

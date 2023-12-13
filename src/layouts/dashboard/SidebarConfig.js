@@ -122,6 +122,12 @@ const sidebarConfig = [
         path: PATH_DASHBOARD.general.viewAnnouncements,
         roleP: ['Student', 'Supervisor', 'Super Admin'],
         icon: <PreviewRounded color="primary" />
+      },
+      {
+        title: 'Developed Projects',
+        path: PATH_DASHBOARD.general.projectsArchive,
+        roleP: ['Student', 'Supervisor', 'Super Admin', 'Coordinator'],
+        icon: <PreviewRounded color="primary" />
       }
     ]
   },
