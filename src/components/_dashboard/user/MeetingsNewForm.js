@@ -25,10 +25,12 @@ import {
 } from '@mui/material';
 
 // utils
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import DatePicker from '@mui/lab/DatePicker';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-
+// import AdapterDateFns from '@mui/lab/AdapterDateFns';
+// import DatePicker from '@mui/lab/DatePicker';
+// import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import Label from '../../Label';
 import { useDispatch, useSelector } from '../../../redux/store';
 import useAuth from '../../../hooks/useAuth';
