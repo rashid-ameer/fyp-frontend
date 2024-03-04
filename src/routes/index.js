@@ -469,7 +469,7 @@ const PageManageUsers = Loadable(lazy(() => import('../pages/PageManageUsers')))
 const PageCreateGroup = Loadable(lazy(() => import('../pages/PageCreateGroup')));
 const PageGroups = Loadable(lazy(() => import('../pages/PageGroups')));
 const PageGroupsUnderSupervision = Loadable(lazy(() => import('../pages/PageGroupsUnderSupervision')));
-const PageGroupsUnderCommittee = Loadable(lazy(() => import('../pages/PageGroupsUnderSupervision')));
+const PageGroupsUnderCommittee = Loadable(lazy(() => import('../pages/PageGroupsUnderCommittee')));
 
 const PageProjectsArchive = Loadable(lazy(() => import('../pages/PageProjectsArchive')));
 const PageCreateReports = Loadable(lazy(() => import('../pages/PageCreateReports')));

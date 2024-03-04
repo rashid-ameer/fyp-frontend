@@ -1,151 +1,128 @@
-import { filter } from 'lodash';
-import { Icon } from '@iconify/react';
-import { sentenceCase } from 'change-case';
 import React, { useState, useEffect } from 'react';
-import plusFill from '@iconify/icons-eva/plus-fill';
-import { Link as RouterLink } from 'react-router-dom';
-
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { useSelector, useDispatch } from 'react-redux';
 import { useTheme, styled, alpha } from '@mui/material/styles';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import EditIcon from '@mui/icons-material/Edit';
-import FileCopyIcon from '@mui/icons-material/FileCopy';
-import Divider from '@mui/material/Divider';
-import AddIcon from '@mui/icons-material/Add';
-import ArchiveIcon from '@mui/icons-material/Archive';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-
-// material
-// import { useTheme } from '@mui/material/styles'; // important
 import {
+  Container,
   Card,
   Table,
   Stack,
-  Avatar,
-  TextField,
-  Button,
   Checkbox,
+  TextField,
   TableRow,
   TableBody,
   TableCell,
-  Toolbar,
-  Container,
-  IconButton,
-  Typography,
   TableContainer,
-  TablePagination
+  Typography,
+  TablePagination,
+  Toolbar
 } from '@mui/material';
-// redux
-import useAuth from '../hooks/useAuth';
-import { useDispatch, useSelector } from '../redux/store';
-import { getBatchesList, deleteBatch } from '../redux/slices/batch';
-import { showAllGroupsUnderSupervisionsByBatch, deleteGroup, getGroupUnderSupervision } from '../redux/slices/group';
-import { getInstructorList } from '../redux/slices/instructor';
-// routes
-import { PATH_DASHBOARD } from '../routes/paths';
-// hooks
-import useSettings from '../hooks/useSettings';
-// components
-import Page from '../components/Page';
-import Label from '../components/Label';
+
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
+import Page from '../components/Page';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
-import { UserListHead, UserListToolbar, GroupsUnderSupervisionMoreMenu } from '../components/_dashboard/user/list';
-
-// ----------------------------------------------------------------------
+import { CommitteeMoreMenu, UserListHead, UserListToolbar } from '../components/_dashboard/user/list';
+import { getGroupsUnderCommittee } from '../redux/slices/committee';
+import { PATH_DASHBOARD } from '../routes/paths';
+import { getBatchesList } from '../redux/slices/batch';
+import useSettings from '../hooks/useSettings';
+import useAuth from '../hooks/useAuth';
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Proposed Title', alignRight: false },
-  { id: 'cmsId', label: 'Group Member 1', alignRight: false },
-  { id: 'cmsId', label: 'Group Member 2', alignRight: false },
-  { id: 'cmsId', label: 'Group Member 3', alignRight: false },
-  { id: 'role', label: 'Batch', alignRight: false },
-  // { id: 'status', label: 'Group Approval', alignRight: false },
-  { id: '' }
+  { id: 'project_title', label: 'Proposed Title', alignRight: false },
+  { id: 'cmsId1', label: 'Group Member 1', alignRight: false },
+  { id: 'cmsId2', label: 'Group Member 2', alignRight: false },
+  { id: 'cmsId3', label: 'Group Member 3', alignRight: false },
+  { id: 'supervisor_name', label: 'Supervisor', alignRight: false },
+  { id: 'batch_name', label: 'Batch', alignRight: false }
 ];
 
-// ----------------------------------------------------------------------
+function createTableRowData(data, batch) {
+  const projectsInfo = [];
 
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
+  data.forEach((item) => {
+    item.committee.groups.forEach((group) => {
+      if (batch !== 'All' && item.committee.batch.batch !== batch) {
+        return;
+      }
 
-function getComparator(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
+      const students = group.students.map((student) => student.user.name);
+      while (students.length < 3) {
+        students.push('Not Available');
+      }
 
-function applySortFilter(array, comparator, query) {
-  console.log('that', array);
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
+      const projectInfo = {
+        project_title: group.project_title,
+        cmsId1: students[0],
+        cmsId2: students[1],
+        cmsId3: students[2],
+        supervisor_name: group.supervisor.user.name,
+        batch_name: item.committee.batch.batch
+      };
+
+      projectsInfo.push(projectInfo);
+    });
   });
-  if (query) {
-    return filter(array, (_user) => _user.project_title.toLowerCase().indexOf(query.toLowerCase()) !== -1);
-  }
-  return stabilizedThis.map((el) => el[0]);
+
+  return projectsInfo;
+}
+
+const sortData = (data, orderBy, order) => {
+  if (!orderBy || !order) return data;
+
+  return [...data].sort((a, b) => {
+    if (a[orderBy] < b[orderBy]) {
+      return order === 'asc' ? -1 : 1;
+    }
+    if (a[orderBy] > b[orderBy]) {
+      return order === 'asc' ? 1 : -1;
+    }
+    return 0;
+  });
+};
+
+function applyFilter(array, query) {
+  if (!query) return array;
+  return array.filter((item) => item.project_title.toLowerCase().includes(query.toLowerCase()));
 }
 
 export default function PageGroupsUnderCommittee() {
   const { themeStretch } = useSettings();
-  const theme = useTheme();
   const dispatch = useDispatch();
-  const { groupList } = useSelector((state) => state.group);
+  const { groupsUnderCommittee } = useSelector((state) => state.committee);
   const { batchesList } = useSelector((state) => state.batch);
-  const { userList } = useSelector((state) => state.instructor);
-  const { user } = useAuth();
-  const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('');
   const [selected, setSelected] = useState([]);
-  const [orderBy, setOrderBy] = useState('name');
-  const [filterName, setFilterName] = useState('');
+  const [formattedData, setFormattedData] = useState([]);
+  const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [batchState, setBatchState] = useState('All');
+  const [filterName, setFilterName] = useState('');
+  const { user } = useAuth();
 
   useEffect(() => {
-    dispatch(getGroupUnderSupervision(user.id));
+    if (!user) return;
+    dispatch(getGroupsUnderCommittee(user.id));
+  }, [dispatch]);
+
+  useEffect(() => {
     dispatch(getBatchesList());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (groupsUnderCommittee) {
+      let formatted = createTableRowData(groupsUnderCommittee, batchState);
+      formatted = sortData(formatted, orderBy, order);
+      formatted = applyFilter(formatted, filterName);
+      setFormattedData(formatted);
+    }
+  }, [groupsUnderCommittee, orderBy, order, batchState, filterName]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
-  };
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = groupList.map((n) => n.name);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-    }
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -161,170 +138,103 @@ export default function PageGroupsUnderCommittee() {
     setFilterName(event.target.value);
   };
 
-  const handleDeleteUser = (userId) => {
-    dispatch(deleteGroup(userId));
-  };
-
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - groupList.length) : 0;
-
-  const filteredUsers = applySortFilter(groupList, getComparator(order, orderBy), filterName);
-
-  const isUserNotFound = filteredUsers.length === 0;
-
-  // ****************
-
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick_ = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose_ = () => {
-    setAnchorEl(null);
-  };
-
-  // **** styled menu
-  const StyledMenu = styled((props) => (
-    <Menu
-      elevation={0}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'right'
-      }}
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right'
-      }}
-      {...props}
-    />
-  ))(({ theme }) => ({
-    '& .MuiPaper-root': {
-      borderRadius: 6,
-      marginTop: theme.spacing(1),
-      minWidth: 180,
-      color: theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
-      boxShadow:
-        'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
-      '& .MuiMenu-list': {
-        padding: '4px 0'
-      },
-      '& .MuiMenuItem-root': {
-        '& .MuiSvgIcon-root': {
-          fontSize: 18,
-          color: theme.palette.text.secondary,
-          marginRight: theme.spacing(1.5)
-        },
-        '&:active': {
-          backgroundColor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity)
-        }
-      }
+  const handleSelectAllClick = (event) => {
+    if (event.target.checked) {
+      const newSelecteds = formattedData.map((n) => n.project_title);
+      setSelected(newSelecteds);
+      return;
     }
-  }));
+    setSelected([]);
+  };
 
-  // ***************
-  const getColor = (status) => {
-    let result;
-    if (status === 0) {
-      result = 'warning';
-    } else if (status === 1) {
-      result = 'success';
-    } else {
-      result = 'error';
-    }
-    return result;
+  const batchSelectHandler = (e) => {
+    setBatchState(e.target.value);
   };
-  const getGroupStatus = (status) => {
-    let result;
-    if (status === 0) {
-      result = 'Inprogress';
-    } else if (status === 1) {
-      result = 'Approved';
-    } else {
-      result = 'Rejected';
+
+  const handleClick = (event, name) => {
+    const selectedIndex = selected.indexOf(name);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, name);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
     }
-    return result;
+
+    setSelected(newSelected);
   };
-  const [batchState, setBatchState] = useState('All');
+
+  const isSelected = (name) => selected.indexOf(name) !== -1;
+  const isGroupNotFound = formattedData.length === 0;
+
   const RootStyle = styled(Toolbar)(({ theme }) => ({
     height: 96,
     display: 'flex',
     justifyContent: 'space-between',
     padding: theme.spacing(0, 1, 0, 3)
   }));
-  const batchSelectHandler = (e) => {
-    setBatchState(e.target.value);
-    if (e.target.value === 'All') {
-      dispatch(getGroupUnderSupervision(user.id));
-    } else {
-      dispatch(
-        showAllGroupsUnderSupervisionsByBatch(user.id, batchesList?.find((batch) => batch.batch === e.target.value)?.id)
-      );
-    }
-  };
-  const getSupervisorName = (row) => {
-    const id = row.supervisor_id ? row.supervisor_id : -1;
-    let result = '';
-    if (id === -1) {
-      result = 'Not Available';
-    } else {
-      const data = userList.find((user) => user.id === id);
-      result = data?.user.name || 'Not Available';
-    }
-    return result;
-  };
+
   return (
-    <Page title="User: List | SIBAU FYPMS">
+    <Page title="Groups Under Committee">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Groups Under Supervision"
+          heading="Groups Under Committee"
           links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Groups' }]}
         />
 
-        <Card>
-          <RootStyle>
-            <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+        <RootStyle>
+          <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+          <TextField
+            select
+            style={{ width: '250px' }}
+            label="Select Batch"
+            placeholder="Select Batch"
+            value={batchState}
+            SelectProps={{ native: true }}
+            onChange={(e) => batchSelectHandler(e)}
+          >
+            <option>All</option>
+            {batchesList.map((batch) => (
+              <option key={batch.batch}>{batch.batch}</option>
+            ))}
+          </TextField>
+        </RootStyle>
 
-            <TextField
-              select
-              style={{ width: '250px' }}
-              label="Select Batch"
-              placeholder="Select Batch"
-              value={batchState}
-              SelectProps={{ native: true }}
-              onChange={(e) => batchSelectHandler(e)}
-            >
-              <option>All</option>
-              {batchesList.map((row) => (
-                <option>{row.batch}</option>
-              ))}
-            </TextField>
-          </RootStyle>
+        <Card>
           <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
+            <TableContainer sx={{ minWidth: 1000 }}>
               <Table>
                 <UserListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={groupList.length}
+                  rowCount={formattedData.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const isItemSelected = selected.indexOf(row.id) !== -1;
-
+                  {formattedData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                    const isItemSelected = isSelected(row.project_title);
                     return (
                       <TableRow
                         hover
-                        key={row.id}
-                        tabIndex={-1}
                         role="checkbox"
-                        selected={isItemSelected}
                         aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={index} // Consider using a more unique key if possible
+                        selected={isItemSelected}
                       >
                         <TableCell padding="checkbox">
-                          <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, row.id)} />
+                          <Checkbox
+                            color="primary"
+                            checked={isItemSelected}
+                            onChange={(event) => handleClick(event, row.project_title)}
+                          />
                         </TableCell>
                         <TableCell component="th" scope="row" padding="none">
                           <Stack direction="row" alignItems="center" spacing={2}>
@@ -333,45 +243,19 @@ export default function PageGroupsUnderCommittee() {
                             </Typography>
                           </Stack>
                         </TableCell>
-                        <TableCell align="left">
-                          <p>{row.students[0]?.user.name || 'Not Available'}</p>
-                          <p>{row.students[0]?.user_id}</p>
-                        </TableCell>
-                        <TableCell align="left">
-                          <p>{row.students[1]?.user.name || 'Not Available'}</p>
-                          <p>{row.students[1]?.user_id || ''}</p>
-                        </TableCell>
-                        <TableCell align="left">
-                          <p>{row.students[2]?.user.name || 'Not Available'}</p>
-                          <p>{row.students[2]?.user_id || ''}</p>
-                        </TableCell>
-                        <TableCell align="left">
-                          <Label variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}>
-                            {batchesList?.find((batch) => batch.id === row.students[0]?.batch_id)?.batch}
-                          </Label>
-                        </TableCell>
-                        {/* <TableCell align="left">
-                          <Label
-                            variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                            color={getColor(row.groupStatus)}
-                          >
-                            {sentenceCase(getGroupStatus(row.groupStatus))}
-                          </Label>
-                        </TableCell> */}
-
+                        <TableCell align="left">{row.cmsId1}</TableCell>
+                        <TableCell align="left">{row.cmsId2}</TableCell>
+                        <TableCell align="left">{row.cmsId3}</TableCell>
+                        <TableCell align="left">{row.supervisor_name}</TableCell>
+                        <TableCell align="left">{row.batch_name}</TableCell>
                         <TableCell align="right">
-                          <GroupsUnderSupervisionMoreMenu onDelete={() => handleDeleteUser(row.id)} userName={row} />
+                          <CommitteeMoreMenu />
                         </TableCell>
                       </TableRow>
                     );
                   })}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
                 </TableBody>
-                {isUserNotFound && (
+                {isGroupNotFound && (
                   <TableBody>
                     <TableRow>
                       <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
@@ -386,7 +270,7 @@ export default function PageGroupsUnderCommittee() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={groupList.length}
+            count={formattedData.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

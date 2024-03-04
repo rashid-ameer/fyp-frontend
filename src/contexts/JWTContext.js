@@ -70,6 +70,8 @@ function AuthProvider({ children }) {
         const accessToken = window.localStorage.getItem('accessToken');
 
         if (accessToken && isValidToken(accessToken)) {
+          console.log('Yes it is working');
+
           setSession(accessToken);
 
           const response = await axios.get('/api/account/my-account');
@@ -113,8 +115,9 @@ function AuthProvider({ children }) {
       password
     });
     const user = response.data;
+    // console.log(user);
 
-    // setSession(accessToken);
+    // setSession(user.accessToken);
     dispatch({
       type: 'LOGIN',
       payload: {

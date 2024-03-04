@@ -2,7 +2,8 @@ import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import { paramCase } from 'change-case';
 import { useRef, useState } from 'react';
-import editFill from '@iconify/icons-eva/edit-fill';
+// import OuiDocumentEdit from '@iconify/icons-eva/out:document-edit';
+import clockOutline from '@iconify/icons-eva/clock-outline';
 import { Link as RouterLink } from 'react-router-dom';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
@@ -13,7 +14,7 @@ import { PATH_DASHBOARD } from '../../../../routes/paths';
 
 // ----------------------------------------------------------------------
 
-export default function CommitteeMoreMenu({ onDelete, userName }) {
+export default function CommitteeMoreMenu() {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -33,22 +34,22 @@ export default function CommitteeMoreMenu({ onDelete, userName }) {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <MenuItem onClick={onDelete} sx={{ color: 'text.secondary' }}>
+        <MenuItem sx={{ color: 'text.secondary' }}>
           <ListItemIcon>
-            <Icon icon={trash2Outline} width={24} height={24} />
+            <Icon icon={clockOutline} width={24} height={24} />
           </ListItemIcon>
-          <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }} />
+          <ListItemText primary="View Progress" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
 
         <MenuItem
           component={RouterLink}
-          to={`${PATH_DASHBOARD.committee.root}/${paramCase(userName)}/committee-edit`}
+          to={`${PATH_DASHBOARD.committee.root}/committee-edit`}
           sx={{ color: 'text.secondary' }}
         >
           <ListItemIcon>
-            <Icon icon={editFill} width={24} height={24} />
+            <Icon icon="oui:document-edit" width={24} height={24} />
           </ListItemIcon>
-          <ListItemText primary="Edit" primaryTypographyProps={{ variant: 'body2' }} />
+          <ListItemText primary="Evaluate" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
       </Menu>
     </>

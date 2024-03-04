@@ -8,6 +8,7 @@ import { Container } from '@mui/material';
 import { SnackbarProvider } from 'notistack';
 import { useDispatch, useSelector } from '../../redux/store';
 import { getUserList } from '../../redux/slices/user';
+import { getCommitteeById } from '../../redux/slices/committee';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // hooks
@@ -26,37 +27,26 @@ export default function CommitteeCreate() {
   const { name } = useParams();
   const { userList } = useSelector((state) => state.user);
   const isEdit = pathname.includes('edit');
-  const currentUser = userList.find((user) => paramCase(user.name) === name);
+  const { committee } = useSelector((state) => state.committee);
 
-  // dummy data: delte it later
-  const [roleList, setRoleList] = useState([
-    { id: '14555', name: 'Khalid Hussain', specialization: 'Software Development' },
-    { id: '14556', name: 'Dr.Ghulam Mujtaba', specialization: 'Artifical Intelligence & Software Development' },
-    { id: '13557', name: 'Dr.Ghulam Mustafa', specialization: 'Artifical Intelligence' },
-    { id: '13558', name: 'Dr.Qamaruddin Khand', specialization: 'Software Development' },
-    { id: '13559', name: 'Faryal Shamsi', specialization: 'Compiler' },
-    { id: '13560', name: 'Sana Fatima', specialization: 'Software Development' },
-    { id: '13561', name: 'Dr.Faisal', specialization: 'Networking' },
-    { id: '13562', name: 'Dr.Zakria', specialization: 'Artifical Intelligence & Networking' },
-    {
-      id: '13563',
-      name: 'Fahad Shahzad',
-      specialization: 'Artifical Intelligence, Software Development & Mobile App Developement'
-    }
-  ]);
+  const formattedCommittee = {};
+  if (committee?.id) {
+    formattedCommittee.id = committee.id;
+    formattedCommittee.batch = committee.batch;
+    formattedCommittee.supervisor_committees = {};
+    formattedCommittee.supervisor_committees = committee.supervisor_committees.map((item) => ({
+      supervisor_committee_id: item.id,
+      user: item.supervisor.user,
+      id: item.supervisor.id
+    }));
 
-  // dummy data: delte it later
-  const [projects, setProjects] = useState([
-    { id: '16661', projectTitle: 'Ai Assistant' },
-    { id: '16662', projectTitle: 'Final Year Management System' },
-    { id: '16663', projectTitle: 'Free Fire' },
-    { id: '16664', projectTitle: 'Smart Glasses' },
-    { id: '16665', projectTitle: 'Smart Qeueue' },
-    { id: '16666', projectTitle: 'WhatBot' }
-  ]);
+    formattedCommittee.groups = committee.groups;
+  }
 
   useEffect(() => {
-    dispatch(getUserList());
+    if (isEdit) {
+      dispatch(getCommitteeById(name));
+    }
   }, [dispatch]);
 
   return (
@@ -71,9 +61,12 @@ export default function CommitteeCreate() {
           ]}
         />
         <SnackbarProvider>
-          <CommitteeNewForm isEdit={isEdit} currentUser={currentUser} roleList={roleList} projects={projects} />
+          {isEdit && !committee?.id ? (
+            <h2>Loading...</h2>
+          ) : (
+            <CommitteeNewForm isEdit={isEdit} committee={formattedCommittee} />
+          )}
         </SnackbarProvider>
-        <AvailableSupervisorList roleList={roleList} setRoleList={setRoleList} />
       </Container>
     </Page>
   );

@@ -10,7 +10,8 @@ const initialState = {
   error: false,
   myProfile: null,
   users: [],
-  userList: []
+  userList: [],
+  availableSupervisorsForCommittee: []
 };
 
 const slice = createSlice({
@@ -42,6 +43,11 @@ const slice = createSlice({
     getUserListSuccess(state, action) {
       state.isLoading = false;
       state.userList = action.payload;
+    },
+    // GET THE SUPERVISORS WHO ARE NOT COMMITEE MEMBERS
+    getAvailableSupervisorsForCommitteeSuccess(state, action) {
+      state.isLoading = false;
+      state.availableSupervisorsForCommittee = action.payload;
     }
   }
 });
@@ -76,6 +82,22 @@ export function getInstructor(id) {
         user_name: id
       });
       dispatch(slice.actions.getUsersSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+    }
+  };
+}
+
+// --------------------------------------------------------------------------
+// GET THOSE INSTRUCTORS WHO ARE NOT COMMITTEE MEMBERS
+export function getAvailableSupervisorsForCommittee(id) {
+  console.log('id', id);
+  return async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await axios.get(`http://localhost:8080/Supervisor/getAvailableSupervisorsForCommittee/${id}`);
+
+      dispatch(slice.actions.getAvailableSupervisorsForCommitteeSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }

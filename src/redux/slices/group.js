@@ -10,7 +10,8 @@ const initialState = {
   error: false,
   group: [],
   groupList: [],
-  groupAttendance: []
+  groupAttendance: [],
+  groupsWithoutCommittee: []
 };
 
 const slice = createSlice({
@@ -28,6 +29,11 @@ const slice = createSlice({
       state.error = action.payload;
     },
 
+    // GET GROUPS BY BATCH WITHOUT COMMITTEE
+    getGroupsWithoutCommitteeSuccess(state, action) {
+      state.isLoading = false;
+      state.groupsWithoutCommittee = action.payload;
+    },
     // GET USERS
     getGroupSuccess(state, action) {
       state.isLoading = false;
@@ -192,6 +198,19 @@ export function updateMembers(username, id) {
         user_name: username
       });
       dispatch(slice.actions.saveGroupSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+    }
+  };
+}
+export function showGroupsByBatchWithoutCommittee(id) {
+  return async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await axios.post('http://localhost:8080/Group/showGroupsByBatchWithoutCommittee', {
+        batch_id: id
+      });
+      dispatch(slice.actions.getGroupsWithoutCommitteeSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }

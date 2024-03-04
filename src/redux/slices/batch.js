@@ -37,7 +37,7 @@ const slice = createSlice({
     // DELETE USERS
     deleteBatch(state, action) {
       const deleteUser = filter(state.batchList, (batch) => batch.id !== action.payload);
-      state.batchList = deleteUser;
+      state.batchesList = deleteUser;
     },
 
     // GET MANAGE USERS

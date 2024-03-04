@@ -4,82 +4,151 @@ import { useCallback, useEffect, useState } from 'react';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 import { Form, FormikProvider, useFormik } from 'formik';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import Chip from '@mui/material/Chip';
+import InputLabel from '@mui/material/InputLabel';
 
 // material
 import { LoadingButton } from '@mui/lab';
-import {
-  Box,
-  Card,
-  Grid,
-  Stack,
-  Switch,
-  IconButton,
-  InputAdornment,
-  TextField,
-  Typography,
-  FormHelperText,
-  FormControlLabel
-} from '@mui/material';
+import { Box, Card, Grid, Stack, TextField } from '@mui/material';
 
-import eyeFill from '@iconify/icons-eva/eye-fill';
-
-import { Icon } from '@iconify/react';
-import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 // utils
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
 // redux
 import { useDispatch, useSelector } from '../../../redux/store';
-import { getStudent } from '../../../redux/slices/student';
-import { getUserList } from '../../../redux/slices/user';
-import { getBatchesList } from '../../../redux/slices/batch';
-import { getDepartmentList } from '../../../redux/slices/department';
-import { getRoleList } from '../../../redux/slices/role';
+import { getGroupByBatch, showGroupsByBatchWithoutCommittee } from '../../../redux/slices/group';
+import { createCommittee, updateCommittee } from '../../../redux/slices/committee';
 
-import useAuth from '../../../hooks/useAuth';
-//
-import Label from '../../Label';
-
-import axios from '../../../utils/axios';
-
-import { UploadAvatar } from '../../upload';
-import { fData } from '../../../utils/formatNumber';
+import { getInstructorList, getAvailableSupervisorsForCommittee } from '../../../redux/slices/instructor';
 
 // ----------------------------------------------------------------------
 
-export default function CommitteeNewForm({ isEdit, currentUser, roleList, projects }) {
+export default function CommitteeNewForm({ isEdit, committee }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
-
-  const [showPassword, setShowPassword] = useState(false);
-
-  const { user } = useAuth();
-  let student;
-  const { departmentList } = useSelector((state) => state.department);
+  const { availableSupervisorsForCommittee } = useSelector((state) => state.instructor);
   const { batchesList } = useSelector((state) => state.batch);
-  // const { roleList } = useSelector((state) => state.role);
-  useSelector((state) => {
-    student = state.student.student;
+  const { groupsWithoutCommittee } = useSelector((state) => state.group);
+  const { userList } = useSelector((state) => state.instructor);
+  const { groupList } = useSelector((state) => state.group);
+  const [selectedProjects, setSelectedProjects] = useState([]);
+  const [selectedCommittee, setSelectedCommittee] = useState([]);
+  const [batch, setBatch] = useState('');
+
+  const isBatchSelected = Boolean(batch);
+  const supervisors = isEdit ? userList : availableSupervisorsForCommittee;
+  const groups = isEdit ? groupList : groupsWithoutCommittee;
+
+  const newCommitteeSchema = Yup.object().shape({
+    committeeCode: Yup.string().min(2).required('Committee Code is required'),
+    batch: Yup.string().required('Batch is required'),
+    member: Yup.array()
+      .min(1, 'Atleast one committee member is required')
+      .required('At least one committee member is required'),
+    project: Yup.array().min(1, 'Atleast one project is required').required('At least one project member is required')
   });
-  const NewUserSchema = Yup.object().shape({
-    committeeCode: Yup.string().required('Committee Code is required'),
-    moderator: Yup.string().required('Moderator is required'),
-    member: Yup.string().required('Member is required'),
-    project: Yup.string().required('Project is required')
-  });
+
+  // hanlde for committee selection
+  const handleCommitteeSelection = (event) => {
+    const {
+      target: { value }
+    } = event;
+    setSelectedCommittee(typeof value === 'string' ? value.split(',') : value);
+    // Update formik.values.member with the selected value(s)
+    formik.setFieldValue('member', typeof value === 'string' ? value.split(',') : value);
+  };
+  // hanlde for group selection
+  const handleGroupSelection = (event) => {
+    const {
+      target: { value }
+    } = event;
+    setSelectedProjects(typeof value === 'string' ? value.split(',') : value);
+    formik.setFieldValue('project', typeof value === 'string' ? value.split(',') : value);
+  };
+
+  // handle change for a batch
+  const handleBatchChange = (e) => {
+    setBatch(e.target.value);
+    formik.setFieldValue('batch', e.target.value);
+  };
+
+  // run when batch changes and fetch all available supervisors for committee
+  useEffect(() => {
+    if (isBatchSelected && !isEdit) {
+      const batchId = batchesList.find((item) => item.batch === batch).id;
+      formik.setFieldValue('member', []);
+      setSelectedCommittee([]);
+      dispatch(getAvailableSupervisorsForCommittee(batchId));
+    } else if (isBatchSelected) {
+      const batchId = batchesList.find((item) => item.batch === batch).id;
+      dispatch(getInstructorList(batchId));
+    }
+  }, [dispatch, batch]);
+
+  useEffect(() => {
+    if (committee?.id) {
+      setBatch(committee.batch.batch);
+      setSelectedCommittee(committee.supervisor_committees.map((supervisor) => supervisor.id));
+      setSelectedProjects(committee.groups.map((group) => group.id));
+    }
+  }, []);
+
+  // run when batch changes and fetch projects who are not assigned to committee
+  useEffect(() => {
+    if (isBatchSelected && !isEdit) {
+      const batchId = batchesList.find((item) => item.batch === batch).id;
+      formik.setFieldValue('project', []);
+      setSelectedProjects([]);
+      dispatch(showGroupsByBatchWithoutCommittee(batchId));
+    } else if (isBatchSelected) {
+      const batchId = batchesList.find((item) => item.batch === batch).id;
+      dispatch(getGroupByBatch(batchId));
+    }
+  }, [dispatch, batch]);
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      committeeCode: currentUser?.committeeCode || '',
-      moderator: currentUser?.moderator || '',
-      member: currentUser?.member || '',
-      project: currentUser?.project || ''
+      committeeCode: committee?.committeeCode || '',
+      batch: committee?.batch?.batch || '',
+      member: [],
+      project: []
     },
-    validationSchema: NewUserSchema,
-    onSubmit: async (values, { setSubmitting, resetForm, setErrors }) => {
-      console.log(values);
+    validationSchema: newCommitteeSchema,
+    onSubmit: (values, { setSubmitting, resetForm, setErrors }) => {
+      const { committeeCode, batch, member, project } = values;
+      const batchId = batchesList.find((item) => item.batch === batch).id;
+
+      if (!isEdit) {
+        dispatch(
+          createCommittee({
+            supervisors: member,
+            groups: project,
+            batch_id: batchId
+          })
+        );
+        formik.resetForm();
+        setSubmitting(false);
+        enqueueSnackbar('Committee created successfully', { variant: 'success' });
+        navigate(PATH_DASHBOARD.committee.list);
+      } else {
+        dispatch(
+          updateCommittee({
+            id: committee.id,
+            supervisors: member,
+            groups: project
+          })
+        );
+
+        setSubmitting(false);
+        enqueueSnackbar('Committee updated successfully', { variant: 'success' });
+        navigate(PATH_DASHBOARD.committee.list);
+      }
     }
   });
 
@@ -101,54 +170,116 @@ export default function CommitteeNewForm({ isEdit, currentUser, roleList, projec
                 />
 
                 <TextField
+                  disabled={isEdit}
                   select
                   fullWidth
-                  label="Moderator"
-                  // placeholder="Moderator"
-                  {...getFieldProps('moderator')}
+                  label="Batch"
+                  {...getFieldProps('batch')}
+                  value={formik.values.batch}
+                  onChange={handleBatchChange}
                   SelectProps={{ native: true }}
-                  error={Boolean(touched.moderator && errors.moderator)}
-                  helperText={touched.moderator && errors.moderator}
+                  error={Boolean(touched.batch && errors.batch)}
+                  helperText={touched.batch && errors.batch}
                 >
                   <option value="" />
-                  {roleList.map((row) => (
-                    <option key={row.id}>{row.name}</option>
+                  {batchesList.map((batchObj) => (
+                    <option key={batchObj.id}>{batchObj.batch}</option>
                   ))}
                 </TextField>
               </Stack>
 
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                <TextField
-                  select
-                  fullWidth
-                  label="Member"
-                  placeholder="Member"
-                  {...getFieldProps('member')}
-                  SelectProps={{ native: true }}
-                  error={Boolean(touched.member && errors.member)}
-                  helperText={touched.member && errors.member}
-                >
-                  <option value="" />
-                  {roleList.map((row) => (
-                    <option key={row.id}>{row.name}</option>
-                  ))}
-                </TextField>
+                <FormControl sx={{ width: '100%', visibility: `${isBatchSelected ? 'visible' : 'hidden'}` }}>
+                  <InputLabel id="demo-multiple-chip-label">Members</InputLabel>
+                  <Select
+                    {...getFieldProps('member')}
+                    style={{ padding: '0' }}
+                    labelId="demo-multiple-chip-label"
+                    id="demo-multiple-chip"
+                    fullWidth
+                    multiple
+                    value={selectedCommittee}
+                    onChange={handleCommitteeSelection}
+                    error={Boolean(touched.member && errors.member)}
+                    helperText={touched.committeeCode && errors.committeeCode}
+                    input={<OutlinedInput id="select-multiple-chip" label="Members" />}
+                    renderValue={(selected) => (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          flexWrap: 'nowrap',
+                          gap: 0.5,
+                          overflowX: 'auto',
+                          maxWidth: '100%'
+                        }}
+                      >
+                        {selectedCommittee.map((value) => (
+                          <Chip key={value} label={supervisors.find((item) => item.id === value)?.user?.name} />
+                        ))}
+                      </Box>
+                    )}
+                    MenuProps={{
+                      PaperProps: {
+                        style: {
+                          width: 'auto',
+                          whiteSpace: 'nowrap'
+                        }
+                      }
+                    }}
+                  >
+                    {supervisors.map((supervisor) => (
+                      <MenuItem key={supervisor.id} value={supervisor.id}>
+                        {supervisor.user.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
 
-                <TextField
-                  select
-                  fullWidth
-                  label="Assign Project"
-                  placeholder="Assign Project"
-                  {...getFieldProps('project')}
-                  SelectProps={{ native: true }}
-                  error={Boolean(touched.project && errors.project)}
-                  helperText={touched.project && errors.project}
-                >
-                  <option value="" />
-                  {projects.map((row) => (
-                    <option key={row.id}>{row.projectTitle}</option>
-                  ))}
-                </TextField>
+                <FormControl sx={{ width: '100%', visibility: `${isBatchSelected ? 'visible' : 'hidden'}` }}>
+                  <InputLabel id="project-multiple-chip-label">Projects</InputLabel>
+                  <Select
+                    {...getFieldProps('project')}
+                    style={{ padding: '0' }}
+                    labelId="project-multiple-chip-label"
+                    id="project-multiple-chip"
+                    fullWidth
+                    multiple
+                    value={selectedProjects}
+                    onChange={handleGroupSelection}
+                    error={Boolean(touched.project && errors.project)}
+                    helperText={touched.committeeCode && errors.committeeCode}
+                    input={<OutlinedInput id="select-multiple-chip" label="Projects" />}
+                    renderValue={(selected) => (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          flexWrap: 'nowrap',
+                          gap: 0.5,
+                          overflowX: 'auto',
+                          maxWidth: '100%'
+                        }}
+                      >
+                        {selectedProjects.map((value) => (
+                          <Chip key={value} label={groups.find((item) => item.id === value)?.project_title} />
+                        ))}
+                      </Box>
+                    )}
+                    MenuProps={{
+                      PaperProps: {
+                        style: {
+                          width: 'auto',
+                          whiteSpace: 'nowrap'
+                        }
+                      }
+                    }}
+                  >
+                    {groups.map((group) => (
+                      <MenuItem key={group.id} value={group.id}>
+                        {group.project_title}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Stack>
 
               <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>

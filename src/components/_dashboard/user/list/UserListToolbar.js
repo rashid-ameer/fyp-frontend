@@ -72,6 +72,7 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName 
         <SearchStyle
           value={filterName}
           onChange={onFilterName}
+          autoFocus
           placeholder="Search..."
           startAdornment={
             <InputAdornment position="start">
@@ -80,28 +81,6 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName 
           }
         />
       )}
-
-      {/* {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <Icon icon={trash2Fill} />
-          </IconButton>
-          <Button
-            variant="contained"
-            // component={RouterLink}
-            // to={PATH_DASHBOARD.general.newAnnouncement}
-            startIcon={<Icon icon={plusFill} />}
-          >
-            Create Group
-          </Button>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <Icon icon={roundFilterList} />
-          </IconButton>
-        </Tooltip>
-      )} */}
     </RootStyle>
   );
 }
