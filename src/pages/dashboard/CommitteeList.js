@@ -25,7 +25,7 @@ import {
 // redux
 import { useDispatch, useSelector } from '../../redux/store';
 import { getAllCommittees } from '../../redux/slices/committee';
-import { getBatchesList } from '../../redux/slices/batch';
+
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // hooks
@@ -69,7 +69,9 @@ export default function CommitteeList() {
       </CardContent>
       <CardActions sx={{ display: 'flex', justifyContent: 'flex-end' }}>
         <Button size="small" variant="outlined">
-          View
+          <Link to={`${PATH_DASHBOARD.committee.root}/${data.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+            View
+          </Link>
         </Button>
         <Button size="small" variant="contained">
           {console.log(`${PATH_DASHBOARD.committee.root}/${data.id}/committee-edit`)}

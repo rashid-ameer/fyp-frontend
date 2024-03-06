@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+// redux
 import { useSelector, useDispatch } from 'react-redux';
+// material ui
 import { useTheme, styled, alpha } from '@mui/material/styles';
 import {
   Container,
@@ -17,14 +19,18 @@ import {
   Toolbar
 } from '@mui/material';
 
+// components
+import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 import Page from '../components/Page';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
+// redux slices
 import { CommitteeMoreMenu, UserListHead, UserListToolbar } from '../components/_dashboard/user/list';
 import { getGroupsUnderCommittee } from '../redux/slices/committee';
 import { PATH_DASHBOARD } from '../routes/paths';
 import { getBatchesList } from '../redux/slices/batch';
+// hooks
 import useSettings from '../hooks/useSettings';
 import useAuth from '../hooks/useAuth';
 
@@ -87,6 +93,7 @@ function applyFilter(array, query) {
 }
 
 export default function PageGroupsUnderCommittee() {
+  const theme = useTheme();
   const { themeStretch } = useSettings();
   const dispatch = useDispatch();
   const { groupsUnderCommittee } = useSelector((state) => state.committee);
@@ -247,7 +254,9 @@ export default function PageGroupsUnderCommittee() {
                         <TableCell align="left">{row.cmsId2}</TableCell>
                         <TableCell align="left">{row.cmsId3}</TableCell>
                         <TableCell align="left">{row.supervisor_name}</TableCell>
-                        <TableCell align="left">{row.batch_name}</TableCell>
+                        <TableCell align="left">
+                          <Label variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}>{row.batch_name}</Label>
+                        </TableCell>
                         <TableCell align="right">
                           <CommitteeMoreMenu />
                         </TableCell>

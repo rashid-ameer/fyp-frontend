@@ -187,7 +187,7 @@ export default function ViewAllAttendance() {
             >
               <option>All</option>
               {batchesList.map((row) => (
-                <option>{row.batch}</option>
+                <option key={row.id}>{row.batch}</option>
               ))}
             </TextField>
           </RootStyle>

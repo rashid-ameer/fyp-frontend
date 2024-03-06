@@ -432,6 +432,14 @@ export default function Router() {
                   <CommitteeCreate />
                 </Provider>
               )
+            },
+            {
+              path: ':committeeId',
+              element: (
+                <Provider store={store}>
+                  <CommitteeView />
+                </Provider>
+              )
             }
           ]
         }
@@ -502,9 +510,10 @@ const PageViewAnnouncements = Loadable(lazy(() => import('../pages/PageViewAnnou
 
 const UserCards = Loadable(lazy(() => import('../pages/dashboard/UserCards')));
 const StudentCreate = Loadable(lazy(() => import('../pages/dashboard/StudentCreate')));
-const CommitteeCreate = Loadable(lazy(() => import('../pages/dashboard/CommitteeCreate')));
 
+const CommitteeCreate = Loadable(lazy(() => import('../pages/dashboard/CommitteeCreate')));
 const CommitteeList = Loadable(lazy(() => import('../pages/dashboard/CommitteeList')));
+const CommitteeView = Loadable(lazy(() => import('../pages/PageViewCommittee')));
 
 const NotFound = Loadable(lazy(() => import('../pages/Page404')));
 // Main

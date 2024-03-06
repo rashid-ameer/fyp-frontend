@@ -58,12 +58,12 @@ import { UserListHead, UserListToolbar, GroupsUnderSupervisionMoreMenu } from '.
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Proposed Title', alignRight: false },
-  { id: 'cmsId', label: 'Group Member 1', alignRight: false },
-  { id: 'cmsId', label: 'Group Member 2', alignRight: false },
-  { id: 'cmsId', label: 'Group Member 3', alignRight: false },
+  { id: 'cmsId1', label: 'Group Member 1', alignRight: false },
+  { id: 'cmsId2', label: 'Group Member 2', alignRight: false },
+  { id: 'cmsId3', label: 'Group Member 3', alignRight: false },
   { id: 'role', label: 'Batch', alignRight: false },
   // { id: 'status', label: 'Group Approval', alignRight: false },
-  { id: '' }
+  { id: 'menu' }
 ];
 
 // ----------------------------------------------------------------------
@@ -85,7 +85,6 @@ function getComparator(order, orderBy) {
 }
 
 function applySortFilter(array, comparator, query) {
-  console.log('that', array);
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -271,6 +270,7 @@ export default function PageGroupsUnderSupervision() {
     }
     return result;
   };
+
   return (
     <Page title="User: List | SIBAU FYPMS">
       <Container maxWidth={themeStretch ? false : 'lg'}>
@@ -294,7 +294,7 @@ export default function PageGroupsUnderSupervision() {
             >
               <option>All</option>
               {batchesList.map((row) => (
-                <option>{row.batch}</option>
+                <option key={row.id}>{row.batch}</option>
               ))}
             </TextField>
           </RootStyle>
@@ -317,7 +317,7 @@ export default function PageGroupsUnderSupervision() {
                     return (
                       <TableRow
                         hover
-                        key={row.id}
+                        key={row.project_title}
                         tabIndex={-1}
                         role="checkbox"
                         selected={isItemSelected}

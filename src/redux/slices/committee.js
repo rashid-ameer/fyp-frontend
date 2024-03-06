@@ -11,7 +11,8 @@ const initialState = {
   success: false,
   committees: [],
   committee: {},
-  groupsUnderCommittee: []
+  groupsUnderCommittee: [],
+  committeeDetails: {}
 };
 
 const slice = createSlice({
@@ -54,9 +55,14 @@ const slice = createSlice({
     },
     // GET PROJECTS UNDER COMMITTEE SUCCESS
     getProjectsUnderCommitteeSuccess(state, action) {
-      state.isLoading = true;
+      state.isLoading = false;
       state.success = true;
       state.groupsUnderCommittee = action.payload;
+    },
+    getCommitteeDetailsSuccess(state, action) {
+      state.isLoading = false;
+      state.success = true;
+      state.committeeDetails = action.payload;
     }
   }
 });
@@ -138,6 +144,22 @@ export function getGroupsUnderCommittee(supervisorId) {
       dispatch(slice.actions.getProjectsUnderCommitteeSuccess(response.data));
     } catch (error) {
       console.log(error);
+    }
+  };
+}
+
+// get single committee details
+export function getCommitteeDetails(committeId) {
+  return async (dispatch) => {
+    try {
+      dispatch(slice.actions.startLoading());
+      const response = await axios.post('http://localhost:8080/Committee/getCommitteeDetails', {
+        committee_id: committeId
+      });
+
+      dispatch(slice.actions.getCommitteeDetailsSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
     }
   };
 }
