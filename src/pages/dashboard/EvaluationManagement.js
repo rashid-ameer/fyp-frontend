@@ -1,6 +1,7 @@
 import React from 'react';
-import { Grid, Card, CardActionArea, CardContent, Typography, Box, Container } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Grid, Card, CardActionArea, CardContent, Typography, Box, Container, Link } from '@mui/material';
+
+import { Link as RouterLink } from 'react-router-dom';
 
 import Page from '../../components/Page';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
@@ -32,7 +33,7 @@ const Dashboard = () => {
           <Grid container spacing={4}>
             {operations.map((operation, index) => (
               <Grid key={index} item xs={12} sm={6}>
-                <Link to={operation.path}>
+                <Link component={RouterLink} to={operation.path} underline="none">
                   <Card
                     sx={{
                       backgroundColor: '#fff',

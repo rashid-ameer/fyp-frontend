@@ -12,12 +12,19 @@ import {
   TableHead,
   TableRow,
   Paper,
-  MenuItem
+  MenuItem,
+  Container
 } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
+import Page from '../components/Page';
+import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
+import useSettings from '../hooks/useSettings';
+import { PATH_DASHBOARD } from '../routes/paths';
+
 import { addRubric, deleteRubric, getAllPlos, getAllRubrics, getRubricTypes, updateRubric } from './api';
 
 function RubricForm() {
+  const { themeStretch, setColor } = useSettings();
   const [criteria, setCriteria] = useState('');
   const [selectedPlo, setSelectedPlo] = useState('');
   const [selectedRubricType, setSelectedRubricType] = useState('');
@@ -112,112 +119,136 @@ function RubricForm() {
   };
 
   return (
-    <div style={{ margin: '20px' }}>
-      <Typography variant="h5" fontWeight="bold" component="h2">
-        Add Rubric
-      </Typography>
-      <form onSubmit={handleAddRubric}>
-        <Grid container spacing={2} style={{ marginTop: '1rem' }}>
-          <Grid item xs={12}>
-            <TextField
-              label="Criteria"
-              variant="outlined"
-              fullWidth
-              value={criteria}
-              onChange={(e) => setCriteria(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              select
-              label="Select PLO"
-              variant="outlined"
-              fullWidth
-              value={selectedPlo}
-              onChange={(e) => setSelectedPlo(e.target.value)}
-            >
-              {plos.map((plo) => (
-                <MenuItem key={plo.id} value={plo.id}>
-                  {plo.title}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              select
-              label="Select Rubric Type"
-              variant="outlined"
-              fullWidth
-              value={selectedRubricType}
-              onChange={(e) => setSelectedRubricType(e.target.value)}
-            >
-              {rubricTypes.map((rubricType) => (
-                <MenuItem key={rubricType.id} value={rubricType.id}>
-                  {rubricType.rubric_type}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
-          <Grid item xs={12}>
-            <Button type="submit" style={{ display: 'block', marginLeft: 'auto' }} variant="contained" color="primary">
-              {editIndex !== null ? 'Update Rubric' : 'Add Rubric'}
-            </Button>
-          </Grid>
-        </Grid>
-      </form>
+    <Page>
+      <Container maxWidth={themeStretch ? false : 'lg'}>
+        <HeaderBreadcrumbs
+          sx={{ marginBottom: '0' }}
+          heading="Evaluation"
+          links={[
+            { name: 'Dashboard', href: PATH_DASHBOARD.root },
+            { name: 'Evaluation List', href: PATH_DASHBOARD.evaluation.management },
+            { name: 'Manage Rubrics' }
+          ]}
+        />
 
-      <TableContainer component={Paper} style={{ marginTop: '2rem' }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>
-                <Typography fontWeight="bold" sx={{ width: '90px' }}>
-                  Rubric No
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography fontWeight="bold">Criteria</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography fontWeight="bold">PLO</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography fontWeight="bold">Rubric Type</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography fontWeight="bold" sx={{ width: '90px' }}>
-                  Actions
-                </Typography>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rubricList.map((rubric, index) => (
-              <TableRow key={index}>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{rubric.criteria}</TableCell>
-                <TableCell>{getPlo(rubric.PLO_id) || 'Not Provided'}</TableCell>
-                <TableCell>{getRubricType(rubric.rubric_type_id)}</TableCell>
-                <TableCell>
-                  <IconButton title="Edit Rubric" color="primary" aria-label="edit" onClick={() => handleEdit(index)}>
-                    <Edit />
-                  </IconButton>
-                  <IconButton
-                    title="Delete Rubric"
-                    color="error"
-                    aria-label="delete"
-                    onClick={() => handleDelete(index)}
-                  >
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </div>
+        <div style={{ margin: '20px' }}>
+          <Typography variant="h5" fontWeight="bold" component="h2">
+            Add Rubric
+          </Typography>
+          <form onSubmit={handleAddRubric}>
+            <Grid container spacing={2} style={{ marginTop: '1rem' }}>
+              <Grid item xs={12}>
+                <TextField
+                  label="Criteria"
+                  variant="outlined"
+                  fullWidth
+                  value={criteria}
+                  onChange={(e) => setCriteria(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  select
+                  label="Select PLO"
+                  variant="outlined"
+                  fullWidth
+                  value={selectedPlo}
+                  onChange={(e) => setSelectedPlo(e.target.value)}
+                >
+                  {plos.map((plo) => (
+                    <MenuItem key={plo.id} value={plo.id}>
+                      {plo.title}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  select
+                  label="Select Rubric Type"
+                  variant="outlined"
+                  fullWidth
+                  value={selectedRubricType}
+                  onChange={(e) => setSelectedRubricType(e.target.value)}
+                >
+                  {rubricTypes.map((rubricType) => (
+                    <MenuItem key={rubricType.id} value={rubricType.id}>
+                      {rubricType.rubric_type}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                  type="submit"
+                  style={{ display: 'block', marginLeft: 'auto' }}
+                  variant="contained"
+                  color="primary"
+                >
+                  {editIndex !== null ? 'Update Rubric' : 'Add Rubric'}
+                </Button>
+              </Grid>
+            </Grid>
+          </form>
+
+          <TableContainer component={Paper} style={{ marginTop: '2rem' }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>
+                    <Typography fontWeight="bold" sx={{ width: '90px' }}>
+                      Rubric No
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography fontWeight="bold">Criteria</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography fontWeight="bold">PLO</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography fontWeight="bold">Rubric Type</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography fontWeight="bold" sx={{ width: '90px' }}>
+                      Actions
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rubricList.map((rubric, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{rubric.criteria}</TableCell>
+                    <TableCell>{getPlo(rubric.PLO_id) || 'Not Provided'}</TableCell>
+                    <TableCell>{getRubricType(rubric.rubric_type_id)}</TableCell>
+                    <TableCell>
+                      <IconButton
+                        title="Edit Rubric"
+                        color="primary"
+                        aria-label="edit"
+                        onClick={() => handleEdit(index)}
+                      >
+                        <Edit />
+                      </IconButton>
+                      <IconButton
+                        title="Delete Rubric"
+                        color="error"
+                        aria-label="delete"
+                        onClick={() => handleDelete(index)}
+                      >
+                        <Delete />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+      </Container>
+    </Page>
   );
 }
 

@@ -17,11 +17,10 @@ import {
 import { Delete, Edit } from '@mui/icons-material';
 import { getAllPlos, addPlo, updatePlo, deletePlo } from './api'; // Import API functions
 
-import Page from '../../components/Page';
-import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
-import { PATH_DASHBOARD } from '../../routes/paths';
-
-import useSettings from '../../hooks/useSettings';
+import Page from '../components/Page';
+import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
+import { PATH_DASHBOARD } from '../routes/paths';
+import useSettings from '../hooks/useSettings';
 
 function PLO() {
   const { themeStretch, setColor } = useSettings();
@@ -84,7 +83,7 @@ function PLO() {
           heading="Evaluation"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Evaluation List', href: PATH_DASHBOARD.evaluation.mangement },
+            { name: 'Evaluation List', href: PATH_DASHBOARD.evaluation.management },
             { name: 'Manage PLO' }
           ]}
         />

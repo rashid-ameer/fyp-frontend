@@ -43,7 +43,7 @@ export default function CommitteeMoreMenu() {
 
         <MenuItem
           component={RouterLink}
-          to={`${PATH_DASHBOARD.committee.root}/committee-edit`}
+          to={PATH_DASHBOARD.evaluation.evaluationTimeline}
           sx={{ color: 'text.secondary' }}
         >
           <ListItemIcon>

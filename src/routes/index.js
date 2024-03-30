@@ -485,6 +485,14 @@ export default function Router() {
                   <RubricsTypeForm />
                 </Provider>
               )
+            },
+            {
+              path: 'evaluation-timeline',
+              element: (
+                <Provider store={store}>
+                  <EvaluationTimeline />
+                </Provider>
+              )
             }
           ]
         }
@@ -573,3 +581,4 @@ const RubricsForm = Loadable(lazy(() => import('../pages/RubricsForm')));
 const RubricsDetailsForm = Loadable(lazy(() => import('../pages/RubricsDetailsForm')));
 const PloForm = Loadable(lazy(() => import('../pages/PloForm')));
 const RubricsTypeForm = Loadable(lazy(() => import('../pages/RubricsTypeForm')));
+const EvaluationTimeline = Loadable(lazy(() => import('../pages/EvaluationTimeline')));

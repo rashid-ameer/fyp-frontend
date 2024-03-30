@@ -14,12 +14,18 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper
+  Paper,
+  Container
 } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import { getRubricTypes, addRubricType, updateRubricType, deleteRubricType } from './api';
+import Page from '../components/Page';
+import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
+import useSettings from '../hooks/useSettings';
+import { PATH_DASHBOARD } from '../routes/paths';
 
 function RubricTypeForm() {
+  const { themeStretch, setColor } = useSettings();
   const [newRubricType, setNewRubricType] = useState('');
   const [rubricTypes, setRubricTypes] = useState([]);
   const [editIndex, setEditIndex] = useState(null);
@@ -77,62 +83,75 @@ function RubricTypeForm() {
   };
 
   return (
-    <div style={{ margin: '20px' }}>
-      <form style={{ display: 'flex', gap: '20px' }} onSubmit={handleAddRubricType}>
-        <TextField
-          label="Rubric Type"
-          variant="outlined"
-          value={newRubricType}
-          onChange={(e) => setNewRubricType(e.target.value)}
-          style={{ flex: '1' }}
+    <Page>
+      <Container maxWidth={themeStretch ? false : 'lg'}>
+        <HeaderBreadcrumbs
+          sx={{ marginBottom: '0' }}
+          heading="Evaluation"
+          links={[
+            { name: 'Dashboard', href: PATH_DASHBOARD.root },
+            { name: 'Evaluation List', href: PATH_DASHBOARD.evaluation.management },
+            { name: 'Manage Rubric Forms' }
+          ]}
         />
-        <Button variant="contained" color="primary" type="submit">
-          {editIndex !== null ? 'Update Rubric Type' : 'Add Rubric Type'}
-        </Button>
-      </form>
+        <div style={{ margin: '20px' }}>
+          <form style={{ display: 'flex', gap: '20px' }} onSubmit={handleAddRubricType}>
+            <TextField
+              label="Rubric Type"
+              variant="outlined"
+              value={newRubricType}
+              onChange={(e) => setNewRubricType(e.target.value)}
+              style={{ flex: '1' }}
+            />
+            <Button variant="contained" color="primary" type="submit">
+              {editIndex !== null ? 'Update Rubric Type' : 'Add Rubric Type'}
+            </Button>
+          </form>
 
-      <TableContainer component={Paper} style={{ marginTop: '20px' }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>
-                <Typography fontWeight="bold">Rubric Type</Typography>
-              </TableCell>
-              <TableCell align="right">
-                <Typography fontWeight="bold">Actions</Typography>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rubricTypes.map((rubricType, index) => (
-              <TableRow key={rubricType.id}>
-                <TableCell component="th" scope="row">
-                  {rubricType.rubric_type}
-                </TableCell>
-                <TableCell align="right">
-                  <IconButton
-                    title="Edit rubric type"
-                    color="primary"
-                    aria-label="edit"
-                    onClick={() => handleEdit(index)}
-                  >
-                    <Edit />
-                  </IconButton>
-                  <IconButton
-                    title="Delete rubric type"
-                    color="error"
-                    aria-label="delete"
-                    onClick={() => handleDelete(rubricType.id, index)}
-                  >
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </div>
+          <TableContainer component={Paper} style={{ marginTop: '20px' }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>
+                    <Typography fontWeight="bold">Rubric Type</Typography>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Typography fontWeight="bold">Actions</Typography>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rubricTypes.map((rubricType, index) => (
+                  <TableRow key={rubricType.id}>
+                    <TableCell component="th" scope="row">
+                      {rubricType.rubric_type}
+                    </TableCell>
+                    <TableCell align="right">
+                      <IconButton
+                        title="Edit rubric type"
+                        color="primary"
+                        aria-label="edit"
+                        onClick={() => handleEdit(index)}
+                      >
+                        <Edit />
+                      </IconButton>
+                      <IconButton
+                        title="Delete rubric type"
+                        color="error"
+                        aria-label="delete"
+                        onClick={() => handleDelete(rubricType.id, index)}
+                      >
+                        <Delete />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+      </Container>
+    </Page>
   );
 }
 

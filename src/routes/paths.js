@@ -83,6 +83,7 @@ export const PATH_DASHBOARD = {
     managePlo: path(ROOTS_DASHBOARD, '/evaluation/manage-plo'),
     manageRubrics: path(ROOTS_DASHBOARD, '/evaluation/manage-rubrics'),
     manageRubricDetails: path(ROOTS_DASHBOARD, '/evaluation/manage-rubric-details'),
-    manageRubricTypes: path(ROOTS_DASHBOARD, '/evaluation/manage-rubric-types')
+    manageRubricTypes: path(ROOTS_DASHBOARD, '/evaluation/manage-rubric-types'),
+    evaluationTimeline: path(ROOTS_DASHBOARD, '/evaluation/evaluation-timeline')
   }
 };
