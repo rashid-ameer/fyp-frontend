@@ -442,6 +442,51 @@ export default function Router() {
               )
             }
           ]
+        },
+        {
+          path: 'evaluation',
+          children: [
+            {
+              path: 'management',
+              element: (
+                <Provider store={store}>
+                  <EvaluationManagement />
+                </Provider>
+              )
+            },
+            {
+              path: 'manage-plo',
+              element: (
+                <Provider store={store}>
+                  <PloForm />
+                </Provider>
+              )
+            },
+            {
+              path: 'manage-rubrics',
+              element: (
+                <Provider store={store}>
+                  <RubricsForm />
+                </Provider>
+              )
+            },
+            {
+              path: 'manage-rubric-details',
+              element: (
+                <Provider store={store}>
+                  <RubricsDetailsForm />
+                </Provider>
+              )
+            },
+            {
+              path: 'manage-rubric-types',
+              element: (
+                <Provider store={store}>
+                  <RubricsTypeForm />
+                </Provider>
+              )
+            }
+          ]
         }
       ]
     },
@@ -521,3 +566,10 @@ const Login = Loadable(lazy(() => import('../pages/authentication/Login')));
 const Register = Loadable(lazy(() => import('../pages/authentication/Register')));
 const ResetPassword = Loadable(lazy(() => import('../pages/authentication/ResetPassword')));
 const VerifyCode = Loadable(lazy(() => import('../pages/authentication/VerifyCode')));
+
+// evaluation
+const EvaluationManagement = Loadable(lazy(() => import('../pages/dashboard/EvaluationManagement')));
+const RubricsForm = Loadable(lazy(() => import('../pages/RubricsForm')));
+const RubricsDetailsForm = Loadable(lazy(() => import('../pages/RubricsDetailsForm')));
+const PloForm = Loadable(lazy(() => import('../pages/PloForm')));
+const RubricsTypeForm = Loadable(lazy(() => import('../pages/RubricsTypeForm')));

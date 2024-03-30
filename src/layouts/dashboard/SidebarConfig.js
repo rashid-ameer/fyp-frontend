@@ -151,6 +151,12 @@ const sidebarConfig = [
         icon: <ManageAccounts color="primary" />
       },
       {
+        title: 'Evaluation Management',
+        path: PATH_DASHBOARD.evaluation.management,
+        roleP: ['Super Admin', 'Coordinator'],
+        icon: <ManageAccounts color="primary" />
+      },
+      {
         title: 'Batch Management',
         path: PATH_DASHBOARD.user.userbatch,
         roleP: ['Coordinator', 'Super Admin'],

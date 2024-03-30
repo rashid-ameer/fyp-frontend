@@ -76,5 +76,13 @@ export const PATH_DASHBOARD = {
     root: path(ROOTS_DASHBOARD, '/committee'),
     list: path(ROOTS_DASHBOARD, '/committee/list'),
     newCommittee: path(ROOTS_DASHBOARD, '/committee/newcommittee')
+  },
+  evaluation: {
+    root: path(ROOTS_DASHBOARD, '/evaluation'),
+    management: path(ROOTS_DASHBOARD, '/evaluation/management'),
+    managePlo: path(ROOTS_DASHBOARD, '/evaluation/manage-plo'),
+    manageRubrics: path(ROOTS_DASHBOARD, '/evaluation/manage-rubrics'),
+    manageRubricDetails: path(ROOTS_DASHBOARD, '/evaluation/manage-rubric-details'),
+    manageRubricTypes: path(ROOTS_DASHBOARD, '/evaluation/manage-rubric-types')
   }
 };
