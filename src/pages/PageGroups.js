@@ -57,9 +57,9 @@ import { UserListHead, UserListToolbar, GroupMoreMenu } from '../components/_das
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Proposed Title', alignRight: false },
-  { id: 'cmsId', label: 'Group Member 1', alignRight: false },
-  { id: 'cmsId', label: 'Group Member 2', alignRight: false },
-  { id: 'cmsId', label: 'Group Member 3', alignRight: false },
+  { id: 'cmsId1', label: 'Group Member 1', alignRight: false },
+  { id: 'cmsId2', label: 'Group Member 2', alignRight: false },
+  { id: 'cmsId3', label: 'Group Member 3', alignRight: false },
   { id: 'role', label: 'Supervisor', alignRight: false },
   { id: 'status', label: 'Group Approval', alignRight: false },
   { id: '' }
@@ -291,7 +291,7 @@ export default function PageGroups() {
             >
               <option>All</option>
               {batchesList.map((row) => (
-                <option>{row.batch}</option>
+                <option key={row.batch}>{row.batch}</option>
               ))}
             </TextField>
           </RootStyle>

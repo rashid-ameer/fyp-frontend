@@ -1,8 +1,5 @@
-import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
-import { paramCase } from 'change-case';
 import { useRef, useState } from 'react';
-// import OuiDocumentEdit from '@iconify/icons-eva/out:document-edit';
 import clockOutline from '@iconify/icons-eva/clock-outline';
 import { Link as RouterLink } from 'react-router-dom';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
@@ -14,7 +11,7 @@ import { PATH_DASHBOARD } from '../../../../routes/paths';
 
 // ----------------------------------------------------------------------
 
-export default function CommitteeMoreMenu({ groupId }) {
+export default function MeetingMoreMenu({ meetingId, groupId }) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -34,22 +31,15 @@ export default function CommitteeMoreMenu({ groupId }) {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <MenuItem sx={{ color: 'text.secondary' }}>
-          <ListItemIcon>
-            <Icon icon={clockOutline} width={24} height={24} />
-          </ListItemIcon>
-          <ListItemText primary="View Progress" primaryTypographyProps={{ variant: 'body2' }} />
-        </MenuItem>
-
         <MenuItem
           component={RouterLink}
-          to={`${PATH_DASHBOARD.evaluation.evaluationTimeline}/${groupId}`}
+          to={`${PATH_DASHBOARD.app.meetingMarkWork}/${meetingId}/${groupId}`}
           sx={{ color: 'text.secondary' }}
         >
           <ListItemIcon>
-            <Icon icon="oui:document-edit" width={24} height={24} />
+            <Icon icon="eva:checkmark-outline" width={24} height={24} />
           </ListItemIcon>
-          <ListItemText primary="Evaluate" primaryTypographyProps={{ variant: 'body2' }} />
+          <ListItemText primary="Mark Assigned Work" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
       </Menu>
     </>

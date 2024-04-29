@@ -41,11 +41,13 @@ import Scrollbar from '../../components/Scrollbar';
 import SearchNotFound from '../../components/SearchNotFound';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
 import { UserListHead, UserListToolbar } from '../../components/_dashboard/user/list';
+import MeetingMoreMenu from 'src/components/_dashboard/user/list/MeetingMoreMenu';
 // ----------------------------------------------------------------------
 const TABLE_HEAD = [
   { id: 'meetingTitle', label: 'Agenda', alignRight: false },
   { id: 'dueDate', label: 'Due Date', alignRight: false },
-  { id: 'postedOn', label: 'Posted On', alignRight: false }
+  { id: 'postedOn', label: 'Posted On', alignRight: false },
+  { id: 'moremenu' }
 ];
 
 // ----------------------------------------------------------------------
@@ -220,6 +222,9 @@ export default function MeetingList() {
                         </TableCell>
                         <TableCell align="left">{getDate(row.date_and_time)}</TableCell>
                         <TableCell align="left">{getDate(row.createdAt)}</TableCell>
+                        <TableCell>
+                          <MeetingMoreMenu meetingId={row.id} groupId={name} />
+                        </TableCell>
                       </TableRow>
                     );
                   })}

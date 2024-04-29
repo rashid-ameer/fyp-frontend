@@ -262,14 +262,12 @@ export default function NotificationsPopover() {
             {announcementList
               .slice(getCountUnReadNotifications(), announcementList.length < 5 ? announcementList.length : 4)
               .map((notification) => (
-                <>
-                  <NotificationItem
-                    key={notification.id}
-                    notification={notification.announcement ? notification.announcement : notification}
-                    component={RouterLink}
-                    to={PATH_DASHBOARD.general.viewAnnouncements}
-                  />
-                </>
+                <NotificationItem
+                  key={notification.id}
+                  notification={notification.announcement ? notification.announcement : notification}
+                  component={RouterLink}
+                  to={PATH_DASHBOARD.general.viewAnnouncements}
+                />
               ))}
           </List>
         </Scrollbar>

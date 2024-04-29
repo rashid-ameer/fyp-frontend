@@ -114,3 +114,59 @@ export async function getRubricDetails() {
   const responseData = await response.json();
   return responseData;
 }
+
+export async function getRubricTypeRubrics(id) {
+  const response = await fetch(`${BASE_URL}/RubricType/getRubricTypeRubrics`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id })
+  });
+  const responseData = await response.json();
+  return responseData;
+}
+
+export async function addReportMarking(data) {
+  const response = await fetch(`${BASE_URL}/Marking/addMarking`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+  const responseData = await response.json();
+  return responseData;
+}
+
+export async function getMarking(data) {
+  const response = await fetch(`${BASE_URL}/Marking/getMarking`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+  const responseData = await response.json();
+  return responseData;
+}
+
+export async function updateMarking(data) {
+  const response = await fetch(`${BASE_URL}/Marking/updateMarking`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+  const responseData = await response.json();
+  return responseData;
+}
+
+export async function getMeetingDetails(id) {
+  const response = await axios.get(`${BASE_URL}/Meeting/getMeetingDetails/${id}`);
+  return response.data;
+}
+
+export async function updateMeetingWorkStatus(data) {
+  const response = await axios.post(`${BASE_URL}/MeetingAssignedWork/updateMeetingWorkStatus`, data);
+  return response.data;
+}

@@ -126,13 +126,21 @@ export default function CommitteeList() {
             </FormControl>
           </div>
           <Grid container columnSpacing={{ xs: 2 }} rowSpacing={{ xs: 2 }} columns={{ xs: 3, sm: 8, md: 12 }}>
-            {committeesToShow.map((committee) => (
-              <Grid key={committee.id} item xs={4} sm={4}>
-                <Card variant="outlined" sx={{ boxShadow: '0 0 10px rgba(0,0,0,0.2)' }}>
-                  {card(committee)}
-                </Card>
+            {committeesToShow.length === 0 ? (
+              <Grid item xs={12}>
+                <Typography variant="h6" fontWeight="bold" textAlign="center" margin="2rem">
+                  No Committees found
+                </Typography>
               </Grid>
-            ))}
+            ) : (
+              committeesToShow.map((committee) => (
+                <Grid key={committee.id} item xs={4} sm={4}>
+                  <Card variant="outlined" sx={{ boxShadow: '0 0 10px rgba(0,0,0,0.2)' }}>
+                    {card(committee)}
+                  </Card>
+                </Grid>
+              ))
+            )}
           </Grid>
         </Box>
       </Container>

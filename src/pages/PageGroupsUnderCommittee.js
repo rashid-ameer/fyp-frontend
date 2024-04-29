@@ -58,6 +58,7 @@ function createTableRowData(data, batch) {
       }
 
       const projectInfo = {
+        projectId: group.id,
         project_title: group.project_title,
         cmsId1: students[0],
         cmsId2: students[1],
@@ -185,6 +186,8 @@ export default function PageGroupsUnderCommittee() {
     padding: theme.spacing(0, 1, 0, 3)
   }));
 
+  console.log('Groups Under Committee: ', groupsUnderCommittee);
+
   return (
     <Page title="Groups Under Committee">
       <Container maxWidth={themeStretch ? false : 'lg'}>
@@ -258,7 +261,7 @@ export default function PageGroupsUnderCommittee() {
                           <Label variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}>{row.batch_name}</Label>
                         </TableCell>
                         <TableCell align="right">
-                          <CommitteeMoreMenu />
+                          <CommitteeMoreMenu groupId={row.projectId} />
                         </TableCell>
                       </TableRow>
                     );

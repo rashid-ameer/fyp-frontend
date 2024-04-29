@@ -21,7 +21,8 @@ import {
   CardHeader,
   CardContent,
   Divider,
-  FormControl
+  FormControl,
+  Box
 } from '@mui/material';
 
 // utils
@@ -37,6 +38,7 @@ import useAuth from '../../../hooks/useAuth';
 import { getReportTypeList } from '../../../redux/slices/reportType';
 import { saveNotification } from '../../../redux/slices/announcement';
 import { getBatchesList, getAllStudent } from '../../../redux/slices/batch';
+import { assignMeetingWork } from '../../../redux/slices/meetingAssignedWork';
 import fakeRequest from '../../../utils/fakeRequest';
 import axios from '../../../utils/axios';
 // routes
@@ -44,6 +46,7 @@ import { PATH_DASHBOARD } from '../../../routes/paths';
 //
 import { QuillEditor } from '../../editor';
 import { UploadMultiFile } from '../../upload';
+import { groups } from 'd3-array';
 
 // ----------------------------------------------------------------------
 
@@ -108,11 +111,13 @@ export default function MeetingsNewForm({ isEdit, group }) {
       deadLine: '',
       member1: 0,
       member2: 0,
-      member3: 0
+      member3: 0,
+      member1Work: '',
+      member2Work: '',
+      member3Work: ''
     },
     validationSchema: NewProductSchema,
     onSubmit: async (values, { setSubmitting, resetForm, setErrors }) => {
-      console.log('values', values);
       try {
         //   const batchId = batchesList?.find((batch) => batch.batch === values.batch)?.id || '';
         const date = new Date(values.deadLine);
@@ -136,7 +141,32 @@ export default function MeetingsNewForm({ isEdit, group }) {
         if (group?.students?.length === 3) {
           dispatch(saveNotification(response.data.announcement.id, group?.students[2]?.id));
         }
-        // console.log(responseMeeting.data);
+
+        const details = [
+          {
+            student_id: group?.students[0]?.id,
+            action_work: values.member1Work
+          },
+          {
+            student_id: group?.students[1]?.id,
+            action_work: values.member2Work
+          }
+        ];
+
+        if (group?.students?.length === 3) {
+          details.push({
+            student_id: group?.students[2]?.id,
+            action_work: values.member3Work
+          });
+        }
+
+        dispatch(
+          assignMeetingWork({
+            meeting_id: responseMeeting.data.id,
+            details
+          })
+        );
+
         markAttendance(group?.students[0]?.id, responseMeeting.data.id, values.member1, group?.students[0].batch_id);
         markAttendance(group?.students[1]?.id, responseMeeting.data.id, values.member2, group?.students[1].batch_id);
         if (group?.students?.length === 3) {
@@ -156,40 +186,9 @@ export default function MeetingsNewForm({ isEdit, group }) {
     }
   });
 
-  const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
+  console.log('group', group);
 
-  const getGroupColor = () => {
-    let result;
-    console.log(group);
-    if (group !== null) {
-      if (group?.groupStatus === 0) {
-        result = 'error';
-      } else if (group?.groupStatus === 1) {
-        result = 'success';
-      } else {
-        result = 'warning';
-      }
-    } else {
-      result = 'error';
-    }
-    return result;
-  };
-  const getGroupStatus = () => {
-    let result;
-    console.log(group);
-    if (group !== null) {
-      if (group?.groupStatus === 0) {
-        result = 'Rejected';
-      } else if (group?.groupStatus === 1) {
-        result = 'Approved';
-      } else {
-        result = 'in Progress';
-      }
-    } else {
-      result = 'Not created yet';
-    }
-    return result;
-  };
+  const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
 
   return (
     <FormikProvider value={formik}>
@@ -197,7 +196,6 @@ export default function MeetingsNewForm({ isEdit, group }) {
         <Grid container spacing={3}>
           <Grid item xs={12} md={8}>
             <Card sx={{ p: 3 }}>
-              <CardHeader title="Assign Work" />
               <Divider />
               <Stack spacing={3}>
                 <TextField
@@ -225,6 +223,61 @@ export default function MeetingsNewForm({ isEdit, group }) {
                 </div>
               </Stack>
             </Card>
+
+            <Card>
+              <CardHeader title="Assign Work to Students" />
+              <CardContent>
+                <Stack spacing={3}>
+                  <Box key={group?.students?.[0]?.id}>
+                    <Typography variant="subtitle1">{group?.students?.[0]?.user?.name}</Typography>
+                    <TextField
+                      fullWidth
+                      multiline
+                      minRows={4}
+                      {...getFieldProps('member1Work')}
+                      error={Boolean(touched.member1Work && errors.member1Work)}
+                      helperText={touched.member1Work && errors.member1Work}
+                    />
+                  </Box>
+
+                  <Box key={group?.students?.[1]?.id}>
+                    <Typography variant="subtitle1">{group?.students?.[1]?.user?.name}</Typography>
+                    <TextField
+                      fullWidth
+                      multiline
+                      minRows={4}
+                      {...getFieldProps('member2Work')}
+                      error={Boolean(touched.member2Work && errors.member2Work)}
+                      helperText={touched.member2Work && errors.member2Work}
+                    />
+                  </Box>
+
+                  {group?.students?.length === 3 && (
+                    <Box key={group?.students?.[2]?.id}>
+                      <Typography variant="subtitle1">{group?.students?.[2]?.user?.name}</Typography>
+                      <TextField
+                        fullWidth
+                        multiline
+                        minRows={4}
+                        {...getFieldProps('member3Work')}
+                        error={Boolean(touched.member3Work && errors.member3Work)}
+                        helperText={touched.member3Work && errors.member3Work}
+                      />
+                    </Box>
+                  )}
+                </Stack>
+              </CardContent>
+            </Card>
+
+            <LoadingButton
+              type="submit"
+              variant="contained"
+              size="large"
+              loading={isSubmitting}
+              style={{ display: 'block', marginLeft: 'auto', marginTop: '1rem' }}
+            >
+              {!isEdit ? 'Create Meeting' : 'Save Changes'}
+            </LoadingButton>
           </Grid>
 
           <Grid item xs={12} md={4}>
@@ -296,68 +349,6 @@ export default function MeetingsNewForm({ isEdit, group }) {
                   </Stack>
                 </CardContent>
               </Card>
-              {/* <Card sx={{ p: 3 }}>
-
-                <Stack spacing={3}>
-
-                  <FormControl fullWidth>
-                    <InputLabel>Report Type</InputLabel>
-                    <Select
-                      label="Report Type"
-                      native
-                      {...getFieldProps('reportType')}
-                      // SelectProps={{ native: true }}
-                      error={Boolean(touched.reportType && errors.reportType)}
-                      helperText={touched.reportType && errors.reportType}
-                    >
-                      {reportTypeList.map((reportType) => (
-                        <option>{reportType.report_type}</option>
-                      ))}
-                    </Select>
-                  </FormControl>
-
-                  <FormControl fullWidth>
-                    <InputLabel>Batch</InputLabel>
-                    <Select
-                      label="Batch"
-                      native
-                      {...getFieldProps('batch')}
-                      SelectProps={{ native: true }}
-                      error={Boolean(touched.batch && errors.batch)}
-                      helperText={touched.batch && errors.batch}
-                    >
-                      {batchesList.map((row) => (
-                        <option>{row.batch}</option>
-                      ))}
-                    </Select>
-                  </FormControl>
-
-                  <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DatePicker
-                      label="Deadline"
-                      {...getFieldProps('deadLine')}
-                      onChange={(newValue) => {
-                        setFieldValue('deadLine', newValue);
-                      }}
-                      renderInput={(params) => <TextField {...params} />}
-                      SelectProps={{ native: true }}
-                      error={Boolean(touched.deadLine && errors.deadLine)}
-                      helperText={touched.deadLine && errors.deadLine}
-                    />
-                  </LocalizationProvider>
-                  <TextField
-                    fullWidth
-                    label="Total Points"
-                    {...getFieldProps('points')}
-                    error={Boolean(touched.points && errors.points)}
-                    helperText={touched.points && errors.points}
-                  />
-                </Stack>
-              </Card> */}
-
-              <LoadingButton type="submit" fullWidth variant="contained" size="large" loading={isSubmitting}>
-                {!isEdit ? 'Create Meeting' : 'Save Changes'}
-              </LoadingButton>
             </Stack>
           </Grid>
         </Grid>

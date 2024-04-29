@@ -21,6 +21,8 @@ import assignedWorkReducer from './slices/assignedWork';
 import groupSubmittedFilesReducer from './slices/groupSubmittedFiles';
 import meetingsReducer from './slices/meetings';
 import committeeReducer from './slices/committee';
+import meetingAssignedWorkReducer from './slices/meetingAssignedWork';
+import meetingAssignedWork from './slices/meetingAssignedWork';
 // ----------------------------------------------------------------------
 
 const rootPersistConfig = {
@@ -56,7 +58,8 @@ const rootReducer = combineReducers({
   groupSubmittedFiles: groupSubmittedFilesReducer,
   meetings: meetingsReducer,
   product: persistReducer(productPersistConfig, productReducer),
-  committee: committeeReducer
+  committee: committeeReducer,
+  meetingAssignedWork: meetingAssignedWorkReducer
 });
 
 export { rootPersistConfig, rootReducer };

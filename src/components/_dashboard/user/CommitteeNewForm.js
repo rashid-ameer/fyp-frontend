@@ -39,10 +39,7 @@ export default function CommitteeNewForm({ isEdit, committee }) {
   const [selectedProjects, setSelectedProjects] = useState([]);
   const [selectedCommittee, setSelectedCommittee] = useState([]);
   const [batch, setBatch] = useState('');
-
-  const isBatchSelected = Boolean(batch);
-  const supervisors = isEdit ? userList : availableSupervisorsForCommittee;
-  const groups = isEdit ? groupList : groupsWithoutCommittee;
+  const [committeeHead, setCommitteeHead] = useState('');
 
   const newCommitteeSchema = Yup.object().shape({
     committeeCode: Yup.string().min(2).required('Committee Code is required'),
@@ -51,6 +48,50 @@ export default function CommitteeNewForm({ isEdit, committee }) {
       .min(1, 'Atleast one committee member is required')
       .required('At least one committee member is required'),
     project: Yup.array().min(1, 'Atleast one project is required').required('At least one project member is required')
+  });
+
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      committeeCode: committee?.committeeCode || '',
+      batch: committee?.batch?.batch || '',
+      committeeHead: committee?.committeeHead || '',
+      member: [],
+      project: []
+    },
+    validationSchema: newCommitteeSchema,
+    onSubmit: (values, { setSubmitting, resetForm, setErrors }) => {
+      const { committeeCode, batch, member, project, committeeHead } = values;
+      const batchId = batchesList.find((item) => item.batch === batch).id;
+
+      if (!isEdit) {
+        dispatch(
+          createCommittee({
+            committeeHead,
+            supervisors: member,
+            groups: project,
+            batch_id: batchId
+          })
+        );
+        formik.resetForm();
+        setSubmitting(false);
+        enqueueSnackbar('Committee created successfully', { variant: 'success' });
+        navigate(PATH_DASHBOARD.committee.list);
+      } else {
+        dispatch(
+          updateCommittee({
+            id: committee.id,
+            committeeHead,
+            supervisors: member,
+            groups: project
+          })
+        );
+
+        setSubmitting(false);
+        enqueueSnackbar('Committee updated successfully', { variant: 'success' });
+        navigate(PATH_DASHBOARD.committee.list);
+      }
+    }
   });
 
   // hanlde for committee selection
@@ -111,48 +152,23 @@ export default function CommitteeNewForm({ isEdit, committee }) {
     }
   }, [dispatch, batch]);
 
-  const formik = useFormik({
-    enableReinitialize: true,
-    initialValues: {
-      committeeCode: committee?.committeeCode || '',
-      batch: committee?.batch?.batch || '',
-      member: [],
-      project: []
-    },
-    validationSchema: newCommitteeSchema,
-    onSubmit: (values, { setSubmitting, resetForm, setErrors }) => {
-      const { committeeCode, batch, member, project } = values;
-      const batchId = batchesList.find((item) => item.batch === batch).id;
+  const handleCommitteeChange = (id) => {
+    formik.setFieldValue('committeeHead', id);
+    setCommitteeHead(id);
+  };
 
-      if (!isEdit) {
-        dispatch(
-          createCommittee({
-            supervisors: member,
-            groups: project,
-            batch_id: batchId
-          })
-        );
-        formik.resetForm();
-        setSubmitting(false);
-        enqueueSnackbar('Committee created successfully', { variant: 'success' });
-        navigate(PATH_DASHBOARD.committee.list);
-      } else {
-        dispatch(
-          updateCommittee({
-            id: committee.id,
-            supervisors: member,
-            groups: project
-          })
-        );
+  const isBatchSelected = Boolean(batch);
+  const supervisors = isEdit ? userList : availableSupervisorsForCommittee;
+  const groups = isEdit ? groupList : groupsWithoutCommittee;
 
-        setSubmitting(false);
-        enqueueSnackbar('Committee updated successfully', { variant: 'success' });
-        navigate(PATH_DASHBOARD.committee.list);
-      }
-    }
-  });
+  const headOptions = supervisors.filter((supervisor) => !formik.values.member.includes(supervisor.id));
+  const memberOptions = supervisors.filter((supervisor) => supervisor.id.toString() !== committeeHead);
 
   const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
+
+  console.log(memberOptions);
+  console.log(headOptions);
+  console.log(committeeHead);
 
   return (
     <FormikProvider value={formik}>
@@ -168,6 +184,24 @@ export default function CommitteeNewForm({ isEdit, committee }) {
                   error={Boolean(touched.committeeCode && errors.committeeCode)}
                   helperText={touched.committeeCode && errors.committeeCode}
                 />
+
+                <TextField
+                  select
+                  fullWidth
+                  label="Committee Head"
+                  {...getFieldProps('committeeHead')}
+                  onChange={(e) => handleCommitteeChange(e.target.value)}
+                  SelectProps={{ native: true }}
+                  error={Boolean(touched.committeeHead && errors.committeeHead)}
+                  helperText={touched.committeeHead && errors.committeeHead}
+                >
+                  <option value="" />
+                  {headOptions.map((supervisor) => (
+                    <option key={supervisor.id} value={supervisor.id}>
+                      {supervisor.user.name}
+                    </option>
+                  ))}
+                </TextField>
 
                 <TextField
                   disabled={isEdit}
@@ -227,7 +261,7 @@ export default function CommitteeNewForm({ isEdit, committee }) {
                       }
                     }}
                   >
-                    {supervisors.map((supervisor) => (
+                    {memberOptions.map((supervisor) => (
                       <MenuItem key={supervisor.id} value={supervisor.id}>
                         {supervisor.user.name}
                       </MenuItem>

@@ -214,7 +214,7 @@ export default function ReportsList() {
             >
               <option>All</option>
               {batchesList.map((row) => (
-                <option>{row.batch}</option>
+                <option key={row.batch}>{row.batch}</option>
               ))}
             </TextField>
           </RootStyle>

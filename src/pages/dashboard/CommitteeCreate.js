@@ -33,6 +33,7 @@ export default function CommitteeCreate() {
   if (committee?.id) {
     formattedCommittee.id = committee.id;
     formattedCommittee.batch = committee.batch;
+    formattedCommittee.committeeHead = committee.supervisor_id;
     formattedCommittee.supervisor_committees = {};
     formattedCommittee.supervisor_committees = committee.supervisor_committees.map((item) => ({
       supervisor_committee_id: item.id,

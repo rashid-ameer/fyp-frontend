@@ -52,6 +52,7 @@ export const PATH_DASHBOARD = {
     supervisorSpecialization: path(ROOTS_DASHBOARD, '/app/supervisor-specialization'),
 
     meetingsList: path(ROOTS_DASHBOARD, '/app/meeting-list'),
+    meetingMarkWork: path(ROOTS_DASHBOARD, '/app/meeting-mark-work'),
     createMeeting: path(ROOTS_DASHBOARD, '/app/create-meeting'),
 
     pageFive: path(ROOTS_DASHBOARD, '/app/five'),
@@ -84,6 +85,7 @@ export const PATH_DASHBOARD = {
     manageRubrics: path(ROOTS_DASHBOARD, '/evaluation/manage-rubrics'),
     manageRubricDetails: path(ROOTS_DASHBOARD, '/evaluation/manage-rubric-details'),
     manageRubricTypes: path(ROOTS_DASHBOARD, '/evaluation/manage-rubric-types'),
-    evaluationTimeline: path(ROOTS_DASHBOARD, '/evaluation/evaluation-timeline')
+    evaluationTimeline: path(ROOTS_DASHBOARD, '/evaluation/evaluation-timeline'),
+    evaluationForm: path(ROOTS_DASHBOARD, '/evaluation/evaluation-form')
   }
 };

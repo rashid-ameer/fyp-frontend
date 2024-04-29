@@ -258,6 +258,14 @@ export default function Router() {
               )
             },
             {
+              path: 'meeting-mark-work/:id/:groupId',
+              element: (
+                <Provider store={store}>
+                  <MeetingMarkWork />
+                </Provider>
+              )
+            },
+            {
               path: 'supervisor-specialization',
               element: (
                 <Provider store={store}>
@@ -487,10 +495,18 @@ export default function Router() {
               )
             },
             {
-              path: 'evaluation-timeline',
+              path: 'evaluation-timeline/:groupId',
               element: (
                 <Provider store={store}>
                   <EvaluationTimeline />
+                </Provider>
+              )
+            },
+            {
+              path: 'evaluation-form/:groupId/:rubricTypeId',
+              element: (
+                <Provider store={store}>
+                  <EvaluationFormWrapper />
                 </Provider>
               )
             }
@@ -551,6 +567,7 @@ const ViewStudentAttendance = Loadable(lazy(() => import('../pages/dashboard/Vie
 const SupervisorSpecialization = Loadable(lazy(() => import('../pages/dashboard/SupervisorSpecialization')));
 const ReportsList = Loadable(lazy(() => import('../pages/dashboard/ReportsList')));
 const MeetingList = Loadable(lazy(() => import('../pages/dashboard/MeetingList')));
+const MeetingMarkWork = Loadable(lazy(() => import('../pages/MeetingMarkWork')));
 
 const ReportsSubmitted = Loadable(lazy(() => import('../pages/dashboard/ReportsSubmitted')));
 const UserProfilePage = Loadable(lazy(() => import('../pages/dashboard/UserProfilePage')));
@@ -582,3 +599,4 @@ const RubricsDetailsForm = Loadable(lazy(() => import('../pages/RubricsDetailsFo
 const PloForm = Loadable(lazy(() => import('../pages/PloForm')));
 const RubricsTypeForm = Loadable(lazy(() => import('../pages/RubricsTypeForm')));
 const EvaluationTimeline = Loadable(lazy(() => import('../pages/EvaluationTimeline')));
+const EvaluationFormWrapper = Loadable(lazy(() => import('../pages/EvaluationFormWrapper')));

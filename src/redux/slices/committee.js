@@ -123,6 +123,7 @@ export function updateCommittee(committee) {
 
     try {
       const response = await axios.put(`http://localhost:8080/Committee/updateCommittee/${committee.id}`, {
+        committeeHead: committee.committeeHead,
         supervisors: committee.supervisors,
         groups: committee.groups
       });
