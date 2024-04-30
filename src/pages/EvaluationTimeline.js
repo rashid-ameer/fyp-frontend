@@ -3,13 +3,13 @@ import { Box, Stepper, Step, StepLabel, Typography, Button, Grid, Card, stepLabe
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import { getRubricTypes } from './api';
 import { styled } from '@mui/material/styles';
-import { Link as RouterLink, useParams } from 'react-router-dom';
+import { Link as RouterLink, useLocation, useParams } from 'react-router-dom';
 import { PATH_DASHBOARD } from 'src/routes/paths';
 import Page from '../components/Page';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 import { Container } from '@mui/material';
 import useSettings from '../hooks/useSettings';
-import { getMarking } from './api';
+import { getMarking, showAssignedWorkByBatch } from './api';
 
 // Custom styled StepLabel for active steps
 const ActiveStepLabel = styled(StepLabel)({
@@ -21,14 +21,10 @@ const ActiveStepLabel = styled(StepLabel)({
 export default function EvaluationTimeline() {
   const { groupId } = useParams();
   const { themeStretch } = useSettings();
-  const deadlines = [
-    new Date('2024-01-01'),
-    new Date('2024-02-01'),
-    new Date('2024-05-01'),
-    new Date('2024-05-01'),
-    new Date('2024-05-01'),
-    new Date('2024-06-01')
-  ];
+  const location = useLocation();
+  const batchId = location.state?.batchId;
+  console.log(groupId, batchId);
+  const [deadlines, setDeadlines] = useState([]);
   const [reports, setReports] = useState([]);
   const [evaluatedReports, setEvaluatedReports] = useState(new Set());
   const today = new Date();
@@ -37,9 +33,10 @@ export default function EvaluationTimeline() {
     const fetchReportsAndEvaluations = async () => {
       try {
         const reportData = await getRubricTypes(); // Assuming this returns an array of reports
+        const deadlineData = await showAssignedWorkByBatch(batchId);
 
         setReports(reportData);
-
+        setDeadlines(deadlineData.map((work) => new Date(work.deadLine)));
         // For each report, check if it has been evaluated and update the state accordingly
         for (const report of reportData) {
           const markingData = await getMarking({ groupId, rubricTypeId: report.id });
@@ -95,7 +92,7 @@ export default function EvaluationTimeline() {
                     component={RouterLink}
                     to={`${PATH_DASHBOARD.evaluation.evaluationForm}/${groupId}/${report.id}`}
                   >
-                    <Button variant="contained" disabled={deadlines[index] > today}>
+                    <Button variant="contained" disabled={deadlines[index] ? deadlines[index] > today : true}>
                       {evaluatedReports.has(report.id) ? 'Evaluate Again' : 'Evaluate'}
                     </Button>
                   </Link>

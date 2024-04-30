@@ -170,3 +170,8 @@ export async function updateMeetingWorkStatus(data) {
   const response = await axios.post(`${BASE_URL}/MeetingAssignedWork/updateMeetingWorkStatus`, data);
   return response.data;
 }
+
+export async function showAssignedWorkByBatch(batch_id) {
+  const response = await axios.post(`${BASE_URL}/AssignedWork/showAssignedWorkByBatch`, { batch_id });
+  return response.data;
+}

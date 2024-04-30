@@ -42,6 +42,7 @@ import { PATH_DASHBOARD } from '../../../routes/paths';
 //
 import { QuillEditor } from '../../editor';
 import { UploadMultiFile } from '../../upload';
+import { parseISO } from 'date-fns';
 
 // ----------------------------------------------------------------------
 
@@ -267,6 +268,7 @@ export default function ReportNewForm({ isEdit, currentData }) {
                       onChange={(newValue) => {
                         setFieldValue('deadLine', newValue);
                       }}
+                      value={typeof values.deadLine === 'string' ? parseISO(values.deadLine) : values.deadLine}
                       renderInput={(params) => <TextField {...params} />}
                       SelectProps={{ native: true }}
                       error={Boolean(touched.deadLine && errors.deadLine)}

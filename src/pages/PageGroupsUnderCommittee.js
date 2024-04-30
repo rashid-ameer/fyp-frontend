@@ -64,7 +64,8 @@ function createTableRowData(data, batch) {
         cmsId2: students[1],
         cmsId3: students[2],
         supervisor_name: group.supervisor.user.name,
-        batch_name: item.committee.batch.batch
+        batch_name: item.committee.batch.batch,
+        batch_id: item.committee.batch.id
       };
 
       projectsInfo.push(projectInfo);
@@ -261,7 +262,7 @@ export default function PageGroupsUnderCommittee() {
                           <Label variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}>{row.batch_name}</Label>
                         </TableCell>
                         <TableCell align="right">
-                          <CommitteeMoreMenu groupId={row.projectId} />
+                          <CommitteeMoreMenu groupId={row.projectId} batchId={row.batch_id} />
                         </TableCell>
                       </TableRow>
                     );

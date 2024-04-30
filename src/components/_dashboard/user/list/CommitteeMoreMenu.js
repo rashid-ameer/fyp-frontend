@@ -14,7 +14,9 @@ import { PATH_DASHBOARD } from '../../../../routes/paths';
 
 // ----------------------------------------------------------------------
 
-export default function CommitteeMoreMenu({ groupId }) {
+export default function CommitteeMoreMenu({ groupId, batchId }) {
+  console.log(batchId);
+
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -41,14 +43,12 @@ export default function CommitteeMoreMenu({ groupId }) {
           <ListItemText primary="View Progress" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
 
-        <MenuItem
-          component={RouterLink}
-          to={`${PATH_DASHBOARD.evaluation.evaluationTimeline}/${groupId}`}
-          sx={{ color: 'text.secondary' }}
-        >
-          <ListItemIcon>
-            <Icon icon="oui:document-edit" width={24} height={24} />
-          </ListItemIcon>
+        <MenuItem sx={{ color: 'text.secondary' }}>
+          <RouterLink to={`${PATH_DASHBOARD.evaluation.evaluationTimeline}/${groupId}`} state={{ batchId }}>
+            <ListItemIcon>
+              <Icon icon="oui:document-edit" width={24} height={24} />
+            </ListItemIcon>
+          </RouterLink>
           <ListItemText primary="Evaluate" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
       </Menu>
