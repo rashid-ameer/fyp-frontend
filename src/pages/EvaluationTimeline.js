@@ -59,7 +59,7 @@ export default function EvaluationTimeline() {
           heading="Evaluation"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Evaluation List', href: PATH_DASHBOARD.evaluation.management },
+            { name: 'Groups Under Committee', href: PATH_DASHBOARD.general.groupsUnderCommittee },
             { name: 'Timeline' }
           ]}
         />

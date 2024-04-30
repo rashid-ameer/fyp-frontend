@@ -44,12 +44,16 @@ export default function CommitteeMoreMenu({ groupId, batchId }) {
         </MenuItem>
 
         <MenuItem sx={{ color: 'text.secondary' }}>
-          <RouterLink to={`${PATH_DASHBOARD.evaluation.evaluationTimeline}/${groupId}`} state={{ batchId }}>
+          <RouterLink
+            to={`${PATH_DASHBOARD.evaluation.evaluationTimeline}/${groupId}`}
+            state={{ batchId }}
+            style={{ display: 'flex', color: 'inherit', textDecoration: 'none' }}
+          >
             <ListItemIcon>
               <Icon icon="oui:document-edit" width={24} height={24} />
             </ListItemIcon>
+            <ListItemText primary="Evaluate" primaryTypographyProps={{ variant: 'body2' }} />
           </RouterLink>
-          <ListItemText primary="Evaluate" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
       </Menu>
     </>
