@@ -87,5 +87,10 @@ export const PATH_DASHBOARD = {
     manageRubricTypes: path(ROOTS_DASHBOARD, '/evaluation/manage-rubric-types'),
     evaluationTimeline: path(ROOTS_DASHBOARD, '/evaluation/evaluation-timeline'),
     evaluationForm: path(ROOTS_DASHBOARD, '/evaluation/evaluation-form')
+  },
+  idea: {
+    root: path(ROOTS_DASHBOARD, '/idea'),
+    submitIdea: path(ROOTS_DASHBOARD, '/idea/submit-idea'),
+    ideaList: path(ROOTS_DASHBOARD, '/idea/list')
   }
 };

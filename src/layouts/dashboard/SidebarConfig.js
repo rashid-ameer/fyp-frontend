@@ -11,7 +11,8 @@ import {
   Add,
   PreviewRounded,
   PanTool,
-  ManageAccounts
+  ManageAccounts,
+  ViewList
 } from '@mui/icons-material';
 
 // routes
@@ -19,6 +20,7 @@ import useAuth from '../../hooks/useAuth';
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
 import SvgIconStyle from '../../components/SvgIconStyle';
+import { View } from 'deck.gl';
 
 // ----------------------------------------------------------------------
 let user1;
@@ -85,6 +87,18 @@ const sidebarConfig = [
         path: PATH_DASHBOARD.general.groupsUnderCommittee,
         roleP: ['Coordinator', 'Supervisor', 'Super Admin'],
         icon: <Groups color="primary" />
+      },
+      {
+        title: 'Project Idea',
+        path: PATH_DASHBOARD.idea.submitIdea,
+        roleP: ['Student'],
+        icon: <Add color="primary" />
+      },
+      {
+        title: 'Ideas',
+        path: PATH_DASHBOARD.idea.ideaList,
+        roleP: ['Super Admin', 'Supervisor'],
+        icon: <ViewList color="primary" />
       },
 
       {

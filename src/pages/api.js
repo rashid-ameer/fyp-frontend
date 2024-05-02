@@ -175,3 +175,43 @@ export async function showAssignedWorkByBatch(batch_id) {
   const response = await axios.post(`${BASE_URL}/AssignedWork/showAssignedWorkByBatch`, { batch_id });
   return response.data;
 }
+
+export async function submitProjectIdea(data) {
+  const response = await axios.post(`${BASE_URL}/Ideas/create`, data);
+  return response.data;
+}
+
+export async function getIdeaDetails(data) {
+  const response = await axios.post(`${BASE_URL}/Ideas/getIdeaDetails`, data);
+  return response.data;
+}
+
+export async function updateIdea(data) {
+  const response = await axios.put(`${BASE_URL}/Ideas/updateIdeaDetails`, data);
+  return response.data;
+}
+
+export async function getAllIdeas() {
+  const response = await axios.get(`${BASE_URL}/Ideas/getAllIdeas`);
+  return response.data;
+}
+
+export async function getIdea(id) {
+  const response = await axios.get(`${BASE_URL}/Ideas/getIdeaDetails/${id}`);
+  return response.data;
+}
+
+export async function createRequestForSupervison(data) {
+  const response = await axios.post(`${BASE_URL}/IdeaRequest/createRequest`, data);
+  return response.data;
+}
+
+export async function getIdeaSupervisonRequests(ideaId) {
+  const response = await axios.get(`${BASE_URL}/IdeaRequest/getIdeaSupervisonRequests/${ideaId}`);
+  return response.data;
+}
+
+export async function assignIdeaSupervisor(data) {
+  const response = await axios.put(`${BASE_URL}/Ideas/assignIdeaSupervisor`, data);
+  return response.data;
+}

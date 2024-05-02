@@ -452,6 +452,43 @@ export default function Router() {
           ]
         },
         {
+          path: 'idea',
+          children: [
+            {
+              path: 'submit-idea',
+              element: (
+                <Provider store={store}>
+                  <ProjectIdeaSubmissionForm />
+                </Provider>
+              )
+            },
+            {
+              path: 'list',
+              element: (
+                <Provider store={store}>
+                  <IdeaList />
+                </Provider>
+              )
+            },
+            {
+              path: ':ideaId',
+              element: (
+                <Provider store={store}>
+                  <ProjectIdea />
+                </Provider>
+              )
+            },
+            {
+              path: 'supervision-requests/:ideaId',
+              element: (
+                <Provider store={store}>
+                  <IdeaSupervisonRequests />
+                </Provider>
+              )
+            }
+          ]
+        },
+        {
           path: 'evaluation',
           children: [
             {
@@ -600,3 +637,9 @@ const PloForm = Loadable(lazy(() => import('../pages/PloForm')));
 const RubricsTypeForm = Loadable(lazy(() => import('../pages/RubricsTypeForm')));
 const EvaluationTimeline = Loadable(lazy(() => import('../pages/EvaluationTimeline')));
 const EvaluationFormWrapper = Loadable(lazy(() => import('../pages/EvaluationFormWrapper')));
+
+// idea
+const ProjectIdeaSubmissionForm = Loadable(lazy(() => import('../pages/ProjectIdeaSubmissionForm')));
+const IdeaList = Loadable(lazy(() => import('../pages/dashboard/IdeaList')));
+const ProjectIdea = Loadable(lazy(() => import('../pages/ProjectIdea')));
+const IdeaSupervisonRequests = Loadable(lazy(() => import('../pages/IdeaSupervisonRequests')));

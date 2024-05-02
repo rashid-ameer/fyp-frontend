@@ -288,6 +288,8 @@ export function getStudent(id) {
       const response = await axios.post('http://localhost:8080/Student/showStudentByCMS', {
         id
       });
+
+      console.log(response.data);
       dispatch(slice.actions.getStudentSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
