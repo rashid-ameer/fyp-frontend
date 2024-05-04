@@ -92,5 +92,9 @@ export const PATH_DASHBOARD = {
     root: path(ROOTS_DASHBOARD, '/idea'),
     submitIdea: path(ROOTS_DASHBOARD, '/idea/submit-idea'),
     ideaList: path(ROOTS_DASHBOARD, '/idea/list')
+  },
+  report: {
+    root: path(ROOTS_DASHBOARD, '/report'),
+    reportList: path(ROOTS_DASHBOARD, '/report/report-list')
   }
 };

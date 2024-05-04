@@ -153,6 +153,12 @@ const sidebarConfig = [
     roleQ: ['Coordinator', 'Super Admin'],
     items: [
       {
+        title: 'Report Management',
+        path: PATH_DASHBOARD.report.reportList,
+        roleP: ['Coordinator', 'Super Admin'],
+        icon: <Assignment color="primary" />
+      },
+      {
         title: 'User Management',
         path: PATH_DASHBOARD.user.list,
         roleP: ['Coordinator', 'Super Admin'],

@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Form, FormikProvider, useFormik } from 'formik';
 // material
 import { styled } from '@mui/material/styles';
@@ -43,6 +43,7 @@ import { PATH_DASHBOARD } from '../../../routes/paths';
 import { QuillEditor } from '../../editor';
 import { UploadMultiFile } from '../../upload';
 import { parseISO } from 'date-fns';
+import { getAllRubricTypes } from '../../../pages/api';
 
 // ----------------------------------------------------------------------
 
@@ -71,17 +72,18 @@ export default function ReportNewForm({ isEdit, currentData }) {
   const NewProductSchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
     description: Yup.string().required('Description is required'),
-    // images: Yup.array().min(1, 'Images is required'),
     reportType: Yup.string().required('Report Type is required'),
     batch: Yup.string().required('Batch is required'),
-    deadLine: Yup.string().required('deadLine is required'),
+    deadLine: Yup.string().required('DeadLine is required'),
     points: Yup.number().required('Points are required')
   });
+
   useEffect(() => {
     dispatch(getReportTypeList());
     dispatch(getBatchesList());
     dispatch(getAllStudent());
   }, [dispatch]);
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {

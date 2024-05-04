@@ -215,3 +215,35 @@ export async function assignIdeaSupervisor(data) {
   const response = await axios.put(`${BASE_URL}/Ideas/assignIdeaSupervisor`, data);
   return response.data;
 }
+
+// get all rubric types
+export async function getAllRubricTypes() {
+  const response = await axios.get(`${BASE_URL}/RubricType/getAllRubricTypes`);
+  return response.data;
+}
+
+// create report type
+export async function createReportType(data) {
+  const response = await axios.post(`${BASE_URL}/ReportType/createReport`, data);
+  return response.data;
+}
+
+export async function getReportRubricMapping() {
+  const response = await axios.get(`${BASE_URL}/RubricReportMapping/getRubricReportMapping`);
+  return response.data;
+}
+
+export async function deleteReportType(reportId) {
+  const response = await axios.delete(`${BASE_URL}/ReportType/deleteReportType/${reportId}`);
+  return response.data;
+}
+
+export async function updateReportType(reportId, data) {
+  const response = await axios.put(`${BASE_URL}/ReportType/updateReportType/${reportId}`, data);
+  return response.data;
+}
+
+export async function getReportType(reportId) {
+  const response = await axios.get(`${BASE_URL}/ReportType/getReportType/${reportId}`);
+  return response.data;
+}

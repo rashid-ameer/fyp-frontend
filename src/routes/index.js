@@ -111,6 +111,7 @@ export default function Router() {
             </Provider>
           )
         },
+
         { path: 'manageusers', element: <PageManageUsers /> },
         {
           path: 'user-profile',
@@ -270,6 +271,35 @@ export default function Router() {
               element: (
                 <Provider store={store}>
                   <SupervisorSpecialization />
+                </Provider>
+              )
+            }
+          ]
+        },
+        {
+          path: 'report',
+          children: [
+            {
+              path: 'report-list',
+              element: (
+                <Provider store={store}>
+                  <ReportList />
+                </Provider>
+              )
+            },
+            {
+              path: 'create-report',
+              element: (
+                <Provider store={store}>
+                  <ReportForm />
+                </Provider>
+              )
+            },
+            {
+              path: 'edit/:id',
+              element: (
+                <Provider store={store}>
+                  <ReportForm />
                 </Provider>
               )
             }
@@ -451,6 +481,7 @@ export default function Router() {
             }
           ]
         },
+
         {
           path: 'idea',
           children: [
@@ -643,3 +674,7 @@ const ProjectIdeaSubmissionForm = Loadable(lazy(() => import('../pages/ProjectId
 const IdeaList = Loadable(lazy(() => import('../pages/dashboard/IdeaList')));
 const ProjectIdea = Loadable(lazy(() => import('../pages/ProjectIdea')));
 const IdeaSupervisonRequests = Loadable(lazy(() => import('../pages/IdeaSupervisonRequests')));
+
+// report
+const ReportList = Loadable(lazy(() => import('../pages/dashboard/ReportList')));
+const ReportForm = Loadable(lazy(() => import('../pages/ReportForm')));
