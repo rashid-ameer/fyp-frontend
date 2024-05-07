@@ -247,3 +247,33 @@ export async function getReportType(reportId) {
   const response = await axios.get(`${BASE_URL}/ReportType/getReportType/${reportId}`);
   return response.data;
 }
+
+export async function getReportWithRubric(reportId) {
+  const response = await axios.get(`${BASE_URL}/RubricReportMapping/getSingleRubricReportMapping/${reportId}`);
+  return response.data;
+}
+
+export async function getAssignedWork(reportId) {
+  const response = await axios.get(`${BASE_URL}/AssignedWork/getAssignedWork/${reportId}`);
+  return response.data;
+}
+
+export async function updateSubmittedFileEvaluation(id, data) {
+  const response = await axios.put(`${BASE_URL}/saveGroupFiles/updateSubmittedFileEvaluation/${id}`, data);
+  return response.data;
+}
+
+export async function getStudentWithGroup(id) {
+  const response = await axios.get(`${BASE_URL}/Student/showStudentWithGroupByCMS/${id}`);
+  return response.data;
+}
+
+export async function getGradedWork(id) {
+  const response = await axios.get(`${BASE_URL}/AssignedWork/getGradedWork/${id}`);
+  return response.data;
+}
+
+export async function getEvaluatedReports(id) {
+  const response = await axios.get(`${BASE_URL}/AssignmentEvaluation/getAssignmentEvaluation/${id}`);
+  return response.data;
+}

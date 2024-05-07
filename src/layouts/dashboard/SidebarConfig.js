@@ -142,6 +142,12 @@ const sidebarConfig = [
         path: PATH_DASHBOARD.general.projectsArchive,
         roleP: ['Student', 'Supervisor', 'Super Admin', 'Coordinator'],
         icon: <PreviewRounded color="primary" />
+      },
+      {
+        title: 'Grades',
+        path: PATH_DASHBOARD.grades.marksList,
+        roleP: ['Student'],
+        icon: <Assignment color="primary" />
       }
     ]
   },

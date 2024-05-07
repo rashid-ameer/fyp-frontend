@@ -12,6 +12,7 @@ import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../../../routes/paths';
+import { Grade } from '@mui/icons-material';
 
 // ----------------------------------------------------------------------
 
@@ -23,6 +24,8 @@ GroupsUnderSupervisionMoreMenu.propTypes = {
 export default function GroupsUnderSupervisionMoreMenu({ onDelete, userName }) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
+
+  // console.log('username', userName);
 
   return (
     <>
@@ -59,6 +62,16 @@ export default function GroupsUnderSupervisionMoreMenu({ onDelete, userName }) {
             <Icon icon={editFill} width={24} height={24} />
           </ListItemIcon>
           <ListItemText primary="See Progress" primaryTypographyProps={{ variant: 'body2' }} />
+        </MenuItem>
+        <MenuItem
+          component={RouterLink}
+          to={`${PATH_DASHBOARD.grades.finalGrades}/${userName.id}`}
+          sx={{ color: 'text.secondary' }}
+        >
+          <ListItemIcon>
+            <Icon icon={Grade} width={24} height={24} />
+          </ListItemIcon>
+          <ListItemText primary="Assign Final Grades" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
       </Menu>
     </>

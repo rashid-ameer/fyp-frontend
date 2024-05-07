@@ -18,8 +18,7 @@ import { addReportMarking, updateMarking } from './api';
 import { useNavigate } from 'react-router';
 import { PATH_DASHBOARD } from 'src/routes/paths';
 
-function EvaluationForm({ criteriaData, groupId, edit, rubricTypeId }) {
-  console.log(rubricTypeId);
+function EvaluationForm({ criteriaData, groupId, edit, rubricTypeId, reportData }) {
   const [selectedPerformances, setSelectedPerformances] = useState(criteriaData.rubrics.map(() => ''));
   const [comments, setComments] = useState('');
   const [currentCriteriaIndex, setCurrentCriteriaIndex] = useState(0);
@@ -51,7 +50,16 @@ function EvaluationForm({ criteriaData, groupId, edit, rubricTypeId }) {
       setIsCommentStep(true); // Move to the comment step
     } else {
       // Prepare data for submission including comments
-      const data = { groupId, rubric_details_ids: selectedPerformances, comments };
+      const data = {
+        groupId,
+        rubric_details_ids: selectedPerformances,
+        comments,
+        totalMarks: reportData.totalPoints,
+        obtainedMarks: reportData.obtainedMarks,
+        groupSubmittedFileId: reportData.groupSubmittedFileId,
+        rubricId: rubricTypeId,
+        assignmentId: reportData.assignmentId
+      };
 
       if (edit) {
         data.rubric_type_id = rubricTypeId;
@@ -69,7 +77,7 @@ function EvaluationForm({ criteriaData, groupId, edit, rubricTypeId }) {
           message: 'Evaluation completed successfully!'
         });
       }
-      navigate(PATH_DASHBOARD.general.appPage);
+      navigate(PATH_DASHBOARD.general.groupsUnderCommittee);
     }
   };
 
@@ -84,6 +92,10 @@ function EvaluationForm({ criteriaData, groupId, edit, rubricTypeId }) {
   const handleCloseSnackbar = () => {
     setSnackbarInfo({ ...snackbarInfo, open: false });
   };
+
+  if (criteriaData.rubrics.length === 0) {
+    return <Typography variant="h6">No criteria found for evaluation</Typography>;
+  }
 
   return (
     <Card variant="outlined" sx={{ minWidth: 300, marginTop: '2rem' }}>

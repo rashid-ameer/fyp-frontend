@@ -37,10 +37,15 @@ export default function CommitteeMoreMenu({ groupId, batchId }) {
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <MenuItem sx={{ color: 'text.secondary' }}>
-          <ListItemIcon>
-            <Icon icon={clockOutline} width={24} height={24} />
-          </ListItemIcon>
-          <ListItemText primary="View Progress" primaryTypographyProps={{ variant: 'body2' }} />
+          <RouterLink
+            to={`${PATH_DASHBOARD.general.groupProgress}/${groupId}`}
+            style={{ display: 'flex', color: 'inherit', textDecoration: 'none' }}
+          >
+            <ListItemIcon>
+              <Icon icon={clockOutline} width={24} height={24} />
+            </ListItemIcon>
+            <ListItemText primary="View Progress" primaryTypographyProps={{ variant: 'body2' }} />
+          </RouterLink>
         </MenuItem>
 
         <MenuItem sx={{ color: 'text.secondary' }}>

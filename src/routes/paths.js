@@ -44,7 +44,8 @@ export const PATH_DASHBOARD = {
     projectsArchive: path(ROOTS_DASHBOARD, '/projectsarchive'),
     reports: path(ROOTS_DASHBOARD, '/reports'),
     createReport: path(ROOTS_DASHBOARD, '/createreport'),
-    submitReports: path(ROOTS_DASHBOARD, '/submitreports')
+    submitReports: path(ROOTS_DASHBOARD, '/submitreports'),
+    groupProgress: path(ROOTS_DASHBOARD, '/group-progress')
   },
   app: {
     root: path(ROOTS_DASHBOARD, '/app'),
@@ -96,5 +97,10 @@ export const PATH_DASHBOARD = {
   report: {
     root: path(ROOTS_DASHBOARD, '/report'),
     reportList: path(ROOTS_DASHBOARD, '/report/report-list')
+  },
+  grades: {
+    root: path(ROOTS_DASHBOARD, '/marks'),
+    marksList: path(ROOTS_DASHBOARD, '/marks/marks-list'),
+    finalGrades: path(ROOTS_DASHBOARD, '/marks/final-grades')
   }
 };

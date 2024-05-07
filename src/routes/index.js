@@ -196,6 +196,14 @@ export default function Router() {
           )
         },
         {
+          path: 'group-progress/:groupId',
+          element: (
+            <Provider store={store}>
+              <GroupSubmittedFiles />
+            </Provider>
+          )
+        },
+        {
           path: 'projectsarchive',
           element: (
             <Provider store={store}>
@@ -228,6 +236,27 @@ export default function Router() {
               <PageSubmitReports />
             </Provider>
           )
+        },
+        {
+          path: 'marks',
+          children: [
+            {
+              path: 'marks-list',
+              element: (
+                <Provider store={store}>
+                  <MarksList />
+                </Provider>
+              )
+            },
+            {
+              path: 'final-grades/:groupId',
+              element: (
+                <Provider store={store}>
+                  <FinalGradesAssignment />
+                </Provider>
+              )
+            }
+          ]
         },
 
         {
@@ -653,6 +682,8 @@ const CommitteeCreate = Loadable(lazy(() => import('../pages/dashboard/Committee
 const CommitteeList = Loadable(lazy(() => import('../pages/dashboard/CommitteeList')));
 const CommitteeView = Loadable(lazy(() => import('../pages/PageViewCommittee')));
 
+const GroupSubmittedFiles = Loadable(lazy(() => import('../pages/GroupSubmittedFiles')));
+
 const NotFound = Loadable(lazy(() => import('../pages/Page404')));
 // Main
 const Login = Loadable(lazy(() => import('../pages/authentication/Login')));
@@ -678,3 +709,7 @@ const IdeaSupervisonRequests = Loadable(lazy(() => import('../pages/IdeaSupervis
 // report
 const ReportList = Loadable(lazy(() => import('../pages/dashboard/ReportList')));
 const ReportForm = Loadable(lazy(() => import('../pages/ReportForm')));
+
+// marks
+const MarksList = Loadable(lazy(() => import('../pages/dashboard/MarksList')));
+const FinalGradesAssignment = Loadable(lazy(() => import('../pages/FinalGradesAssignment')));
