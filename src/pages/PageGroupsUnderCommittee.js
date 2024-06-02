@@ -51,7 +51,6 @@ function createTableRowData(data, batch) {
       if (batch !== 'All' && item.committee.batch.batch !== batch) {
         return;
       }
-
       const students = group.students.map((student) => student.user.name);
       while (students.length < 3) {
         students.push('Not Available');

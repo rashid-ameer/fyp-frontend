@@ -48,7 +48,7 @@ function GroupSubmittedFiles() {
         const downloadUrl = window.URL.createObjectURL(new Blob([data]));
         const link = document.createElement('a');
         link.href = downloadUrl;
-        link.setAttribute('download', file[0].file_name);
+        link.setAttribute('download', file);
         document.body.appendChild(link);
         link.click();
         link.remove();
@@ -68,7 +68,7 @@ function GroupSubmittedFiles() {
 
   function getSubmissionColor(daysDifference) {
     if (daysDifference < 0) {
-      return 'danger';
+      return 'error';
     } else {
       return 'success';
     }

@@ -42,6 +42,7 @@ export default function SubmitReportsNewForm({ isEdit, currentProduct, msg, repo
     files: Yup.array().min(1, 'Files are required')
   });
 
+  console.log('reportData', reportData);
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -267,7 +268,7 @@ export default function SubmitReportsNewForm({ isEdit, currentProduct, msg, repo
                 <div>
                   <LabelStyle>Add Files</LabelStyle>
                   <UploadMultiFile
-                    disabled={getDisabledStatus()}
+                    // disabled={getDisabledStatus()}
                     showPreview={false}
                     files={values.files}
                     onDrop={handleDrop}

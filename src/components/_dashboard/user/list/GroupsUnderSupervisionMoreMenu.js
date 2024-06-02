@@ -21,7 +21,7 @@ GroupsUnderSupervisionMoreMenu.propTypes = {
   userName: PropTypes.object
 };
 
-export default function GroupsUnderSupervisionMoreMenu({ onDelete, userName }) {
+export default function GroupsUnderSupervisionMoreMenu({ onDelete, userName, group_id }) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 

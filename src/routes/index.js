@@ -146,6 +146,14 @@ export default function Router() {
           )
         },
         {
+          path: 'manage-grades',
+          element: (
+            <Provider store={store}>
+              <ManageGrades />
+            </Provider>
+          )
+        },
+        {
           path: 'createGroup',
           element: (
             <Provider store={store}>
@@ -252,7 +260,17 @@ export default function Router() {
               path: 'final-grades/:groupId',
               element: (
                 <Provider store={store}>
-                  <FinalGradesAssignment />
+                  <SnackbarProvider>
+                    <FinalGradesAssignment />
+                  </SnackbarProvider>
+                </Provider>
+              )
+            },
+            {
+              path: 'detail-marks/:assignmentId',
+              element: (
+                <Provider store={store}>
+                  <DetailedMarks />
                 </Provider>
               )
             }
@@ -644,6 +662,7 @@ const PageCreateGroup = Loadable(lazy(() => import('../pages/PageCreateGroup')))
 const PageGroups = Loadable(lazy(() => import('../pages/PageGroups')));
 const PageGroupsUnderSupervision = Loadable(lazy(() => import('../pages/PageGroupsUnderSupervision')));
 const PageGroupsUnderCommittee = Loadable(lazy(() => import('../pages/PageGroupsUnderCommittee')));
+const ManageGrades = Loadable(lazy(() => import('../pages/ManageGrades')));
 
 const PageProjectsArchive = Loadable(lazy(() => import('../pages/PageProjectsArchive')));
 const PageCreateReports = Loadable(lazy(() => import('../pages/PageCreateReports')));
@@ -713,3 +732,4 @@ const ReportForm = Loadable(lazy(() => import('../pages/ReportForm')));
 // marks
 const MarksList = Loadable(lazy(() => import('../pages/dashboard/MarksList')));
 const FinalGradesAssignment = Loadable(lazy(() => import('../pages/FinalGradesAssignment')));
+const DetailedMarks = Loadable(lazy(() => import('../pages/DetailedMarks')));

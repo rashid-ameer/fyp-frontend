@@ -112,6 +112,8 @@ export default function PageGroupsUnderSupervision() {
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  console.log('Group List', groupList);
+
   useEffect(() => {
     dispatch(getGroupUnderSupervision(user.id));
     dispatch(getBatchesList());

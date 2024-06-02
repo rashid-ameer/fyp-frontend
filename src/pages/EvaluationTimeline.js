@@ -68,7 +68,8 @@ export default function EvaluationTimeline() {
 
         console.log(evaluatedReports);
         console.log(rubricTypes);
-        console.log(groupId);
+        console.log(deadlineData);
+        console.log(reportRubricMapping);
 
         rubricTypes = rubricTypes.map((rubric) => ({
           id: rubric.id,
@@ -83,7 +84,9 @@ export default function EvaluationTimeline() {
 
         setData(filterReportRubricMapping(reportRubricMapping));
         setRubricTypes(rubricTypes);
-        setDeadlines(deadlineData.map((work) => new Date(work.deadLine)));
+        setDeadlines(
+          deadlineData.filter((data) => data.title.toLowerCase() !== 'abstract').map((data) => new Date(data.deadLine))
+        );
       } catch (error) {
         console.error('Failed to fetch reports or evaluations:', error);
       }
@@ -91,8 +94,6 @@ export default function EvaluationTimeline() {
 
     fetchReportsAndEvaluations();
   }, []);
-
-  console.log('Data', data);
 
   return (
     <Page title="Evaluation">
@@ -130,24 +131,27 @@ export default function EvaluationTimeline() {
                   <Typography variant="h6">
                     <EventNoteIcon sx={{ mr: 1 }} /> {rubricType.rubric.rubric_type}
                   </Typography>
-                  <Link
-                    component={RouterLink}
-                    to={`${PATH_DASHBOARD.evaluation.evaluationForm}/${groupId}/${rubricType.rubric.id}`}
-                    state={{
-                      reports: rubricType.rubric.reports,
-                      isEvaluated: rubricType.rubric.isEvaluated,
-                      rubricType: rubricType.rubric.rubric_type
-                    }}
-                  >
-                    <Button
-                      variant="contained"
-                      disabled={deadlines[index] ? deadlines[index].deadLine < new Date(today) : true}
+                  <Button variant="contained" disabled={deadlines[index] ? deadlines[index] < new Date(today) : true}>
+                    <Link
+                      style={{ height: '100%', width: '100%', color: 'inherit' }}
+                      component={RouterLink}
+                      to={`${PATH_DASHBOARD.evaluation.evaluationForm}/${groupId}/${rubricType.rubric.id}`}
+                      state={{
+                        reports: rubricType.rubric.reports,
+                        isEvaluated: rubricTypes.find((rubric) => rubric.id === rubricType.rubric.id)?.isEvaluated,
+                        rubricType: rubricType.rubric.rubric_type
+                      }}
                     >
+                      {console.log(
+                        deadlines[index],
+                        deadlines[index] ? deadlines[index] < new Date(today) : true,
+                        deadlines[index] < new Date(today)
+                      )}
                       {rubricTypes.find((rubric) => rubric.id === rubricType.rubric.id)?.isEvaluated
                         ? 'Evaluate Again'
                         : 'Evaluate'}
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                 </Card>
               </Grid>
             ))}

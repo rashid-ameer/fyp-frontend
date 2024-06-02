@@ -159,6 +159,12 @@ const sidebarConfig = [
     roleQ: ['Coordinator', 'Super Admin'],
     items: [
       {
+        title: 'Manage Grades',
+        path: PATH_DASHBOARD.general.manageGrades,
+        roleP: ['Coordinator', 'Super Admin'],
+        icon: <Assignment color="primary" />
+      },
+      {
         title: 'Report Management',
         path: PATH_DASHBOARD.report.reportList,
         roleP: ['Coordinator', 'Super Admin'],

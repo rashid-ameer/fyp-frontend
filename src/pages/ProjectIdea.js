@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Button,
   Card,
@@ -17,6 +17,7 @@ import { getIdea, createRequestForSupervison } from './api';
 import { getInstructor } from '../redux/slices/instructor';
 import { useDispatch, useSelector } from 'react-redux';
 import useAuth from '../hooks/useAuth';
+import { PATH_DASHBOARD } from '../routes/paths';
 
 function ProjectIdeaDetails() {
   const { ideaId } = useParams();
@@ -25,6 +26,7 @@ function ProjectIdeaDetails() {
   const dispatch = useDispatch();
   const { users } = useSelector((state) => state.instructor);
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -47,7 +49,7 @@ function ProjectIdeaDetails() {
       idea_id: ideaId
     };
     const response = await createRequestForSupervison(data);
-    console.log(response);
+    navigate(`${PATH_DASHBOARD.idea.ideaList}`);
   }
 
   if (loading) return <Typography>Loading...</Typography>;

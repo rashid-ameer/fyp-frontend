@@ -277,3 +277,8 @@ export async function getEvaluatedReports(id) {
   const response = await axios.get(`${BASE_URL}/AssignmentEvaluation/getAssignmentEvaluation/${id}`);
   return response.data;
 }
+
+export async function getDetailedGradedWork(data) {
+  const response = await axios.post(`${BASE_URL}/AssignmentEvaluation/getDetailedGradedWork`, data);
+  return response.data;
+}

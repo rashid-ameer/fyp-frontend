@@ -15,6 +15,7 @@ import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs'; // Import yo
 import { PATH_DASHBOARD } from '../../routes/paths'; // Import your PATH_DASHBOARD constant
 import useAuth from '../../hooks/useAuth'; // Import your useAuth hook
 import { getStudentWithGroup, getGradedWork } from '../api'; // Import your API function
+import { Link } from 'react-router-dom';
 
 function MarksList() {
   const { user } = useAuth();
@@ -87,7 +88,13 @@ function MarksList() {
                   <TableCell>{work.group_submitted_file.obtained_marks}</TableCell>
                   <TableCell>
                     <Button variant="contained" color="primary">
-                      View More
+                      <Link
+                        style={{ color: 'inherit', textDecoration: 'none' }}
+                        to={`${PATH_DASHBOARD.grades.detailGrades}/${work.id}`}
+                        state={{ groupId: student.group_id }}
+                      >
+                        View More
+                      </Link>
                     </Button>
                   </TableCell>
                 </TableRow>
