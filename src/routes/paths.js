@@ -46,7 +46,8 @@ export const PATH_DASHBOARD = {
     createReport: path(ROOTS_DASHBOARD, '/createreport'),
     submitReports: path(ROOTS_DASHBOARD, '/submitreports'),
     groupProgress: path(ROOTS_DASHBOARD, '/group-progress'),
-    manageGrades: path(ROOTS_DASHBOARD, '/manage-grades')
+    manageGrades: path(ROOTS_DASHBOARD, '/manage-grades'),
+    externalEvaluation: path(ROOTS_DASHBOARD, '/external-evaluation')
   },
   app: {
     root: path(ROOTS_DASHBOARD, '/app'),

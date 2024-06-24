@@ -114,6 +114,16 @@ export default function Router() {
 
         { path: 'manageusers', element: <PageManageUsers /> },
         {
+          path: 'external-evaluation/:groupId',
+          element: (
+            <Provider store={store}>
+              <SnackbarProvider>
+                <ExternalEvaluation />
+              </SnackbarProvider>
+            </Provider>
+          )
+        },
+        {
           path: 'user-profile',
           element: (
             <Provider store={store}>
@@ -219,6 +229,7 @@ export default function Router() {
             </Provider>
           )
         },
+
         {
           path: 'reports',
           element: (
@@ -266,6 +277,7 @@ export default function Router() {
                 </Provider>
               )
             },
+
             {
               path: 'detail-marks/:assignmentId',
               element: (
@@ -663,6 +675,7 @@ const PageGroups = Loadable(lazy(() => import('../pages/PageGroups')));
 const PageGroupsUnderSupervision = Loadable(lazy(() => import('../pages/PageGroupsUnderSupervision')));
 const PageGroupsUnderCommittee = Loadable(lazy(() => import('../pages/PageGroupsUnderCommittee')));
 const ManageGrades = Loadable(lazy(() => import('../pages/ManageGrades')));
+const ExternalEvaluation = Loadable(lazy(() => import('../pages/ExternalEvaluation')));
 
 const PageProjectsArchive = Loadable(lazy(() => import('../pages/PageProjectsArchive')));
 const PageCreateReports = Loadable(lazy(() => import('../pages/PageCreateReports')));

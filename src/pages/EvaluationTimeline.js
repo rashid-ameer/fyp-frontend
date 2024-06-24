@@ -51,9 +51,13 @@ export default function EvaluationTimeline() {
     });
 
     // Convert the rubrics object into the required array format
-    let formattedData = Object.values(rubrics).map((rubric) => ({
-      rubric: rubric
-    }));
+    let formattedData = Object.values(rubrics)
+      .map((rubric) => ({
+        rubric: rubric
+      }))
+      .filter((rubric) => {
+        return rubric.rubric.rubric_type.toLowerCase() !== 'final external defence evaluation';
+      });
 
     return formattedData;
   }
@@ -71,16 +75,18 @@ export default function EvaluationTimeline() {
         console.log(deadlineData);
         console.log(reportRubricMapping);
 
-        rubricTypes = rubricTypes.map((rubric) => ({
-          id: rubric.id,
-          rubric_type: rubric.rubric_type,
-          isEvaluated: evaluatedReports.find(
-            (evaluatedReport) =>
-              evaluatedReport.rubric_id === rubric.id && evaluatedReport.group_id === parseInt(groupId)
-          )
-            ? true
-            : false
-        }));
+        rubricTypes = rubricTypes
+          .map((rubric) => ({
+            id: rubric.id,
+            rubric_type: rubric.rubric_type,
+            isEvaluated: evaluatedReports.find(
+              (evaluatedReport) =>
+                evaluatedReport.rubric_id === rubric.id && evaluatedReport.group_id === parseInt(groupId)
+            )
+              ? true
+              : false
+          }))
+          .filter((rubric) => rubric.rubric_type.toLowerCase() !== 'final external defence evaluation');
 
         setData(filterReportRubricMapping(reportRubricMapping));
         setRubricTypes(rubricTypes);
@@ -142,11 +148,6 @@ export default function EvaluationTimeline() {
                         rubricType: rubricType.rubric.rubric_type
                       }}
                     >
-                      {console.log(
-                        deadlines[index],
-                        deadlines[index] ? deadlines[index] < new Date(today) : true,
-                        deadlines[index] < new Date(today)
-                      )}
                       {rubricTypes.find((rubric) => rubric.id === rubricType.rubric.id)?.isEvaluated
                         ? 'Evaluate Again'
                         : 'Evaluate'}

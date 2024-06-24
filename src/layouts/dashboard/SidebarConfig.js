@@ -12,7 +12,18 @@ import {
   PreviewRounded,
   PanTool,
   ManageAccounts,
-  ViewList
+  ViewList,
+  Assessment,
+  AccountTree,
+  ManageAccountsRounded,
+  Diversity3,
+  ManageHistory,
+  Map,
+  PersonAddAlt,
+  Handyman,
+  AccountBalanceWallet,
+  BatchPrediction,
+  SettingsApplications
 } from '@mui/icons-material';
 
 // routes
@@ -20,7 +31,6 @@ import useAuth from '../../hooks/useAuth';
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
 import SvgIconStyle from '../../components/SvgIconStyle';
-import { View } from 'deck.gl';
 
 // ----------------------------------------------------------------------
 let user1;
@@ -74,7 +84,7 @@ const sidebarConfig = [
         title: 'Group Management',
         path: PATH_DASHBOARD.general.viewGroups,
         roleP: ['Coordinator', 'Super Admin'],
-        icon: <Groups color="primary" />
+        icon: <ManageAccounts color="primary" />
       },
       {
         title: 'Groups Under Supervision',
@@ -86,7 +96,7 @@ const sidebarConfig = [
         title: 'Groups Under Committee',
         path: PATH_DASHBOARD.general.groupsUnderCommittee,
         roleP: ['Coordinator', 'Supervisor', 'Super Admin'],
-        icon: <Groups color="primary" />
+        icon: <Diversity3 color="primary" />
       },
       {
         title: 'Project Idea',
@@ -123,7 +133,7 @@ const sidebarConfig = [
         title: 'View Attendance',
         path: PATH_DASHBOARD.general.viewStudentAttendance,
         roleP: ['Super Admin', 'Student'],
-        icon: <PanTool color="primary" />
+        icon: <Assessment color="primary" />
       },
       {
         title: 'Submit Reports',
@@ -141,7 +151,7 @@ const sidebarConfig = [
         title: 'Developed Projects',
         path: PATH_DASHBOARD.general.projectsArchive,
         roleP: ['Student', 'Supervisor', 'Super Admin', 'Coordinator'],
-        icon: <PreviewRounded color="primary" />
+        icon: <AccountTree color="primary" />
       },
       {
         title: 'Grades',
@@ -162,43 +172,43 @@ const sidebarConfig = [
         title: 'Manage Grades',
         path: PATH_DASHBOARD.general.manageGrades,
         roleP: ['Coordinator', 'Super Admin'],
-        icon: <Assignment color="primary" />
+        icon: <ManageHistory color="primary" />
       },
       {
-        title: 'Report Management',
+        title: 'Report Rubric Mapping',
         path: PATH_DASHBOARD.report.reportList,
         roleP: ['Coordinator', 'Super Admin'],
-        icon: <Assignment color="primary" />
+        icon: <Map color="primary" />
       },
       {
         title: 'User Management',
         path: PATH_DASHBOARD.user.list,
         roleP: ['Coordinator', 'Super Admin'],
-        icon: <ManageAccounts color="primary" />
+        icon: <PersonAddAlt color="primary" />
       },
       {
         title: 'Committee Management',
         path: PATH_DASHBOARD.committee.list,
         roleP: ['Super Admin', 'Coordinator'],
-        icon: <ManageAccounts color="primary" />
+        icon: <Handyman color="primary" />
       },
       {
         title: 'Evaluation Management',
         path: PATH_DASHBOARD.evaluation.management,
         roleP: ['Super Admin', 'Coordinator'],
-        icon: <ManageAccounts color="primary" />
+        icon: <AccountBalanceWallet color="primary" />
       },
       {
         title: 'Batch Management',
         path: PATH_DASHBOARD.user.userbatch,
         roleP: ['Coordinator', 'Super Admin'],
-        icon: <ManageAccounts color="primary" />
+        icon: <BatchPrediction color="primary" />
       },
       {
         title: 'Role Management',
         path: PATH_DASHBOARD.user.userRole,
         roleP: ['Super Admin'],
-        icon: <ManageAccounts color="primary" />
+        icon: <SettingsApplications color="primary" />
       }
     ]
   }

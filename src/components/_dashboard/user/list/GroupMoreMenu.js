@@ -57,6 +57,18 @@ export default function GroupMoreMenu({ onDelete, userName }) {
           </ListItemIcon>
           <ListItemText primary="See Progress" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
+
+        {console.log(`external-evaluation/${userName.id}`)}
+        <MenuItem
+          component={RouterLink}
+          to={`${PATH_DASHBOARD.general.externalEvaluation}/${userName.id}`}
+          sx={{ color: 'text.secondary' }}
+        >
+          <ListItemIcon>
+            <Icon icon={editFill} width={24} height={24} />
+          </ListItemIcon>
+          <ListItemText primary="Evaluate Group" primaryTypographyProps={{ variant: 'body2' }} />
+        </MenuItem>
       </Menu>
     </>
   );

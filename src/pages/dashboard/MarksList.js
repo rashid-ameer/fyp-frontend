@@ -21,6 +21,8 @@ function MarksList() {
   const { user } = useAuth();
   const [student, setStudent] = useState({});
   const [gradedWork, setGradedWork] = useState([]);
+  const [totalGrades, setTotalGrades] = useState([]);
+  const [grades, setGrades] = useState([]);
 
   //   const assignments = [
   //     { id: 1, name: 'Project Proposal', totalMarks: 100, obtainedMarks: 85 },
@@ -43,6 +45,22 @@ function MarksList() {
     }
   }, []);
 
+  console.log(gradedWork);
+
+  useEffect(() => {
+    const fetchGradedWork = async () => {
+      try {
+        const data = await fetch(`http://localhost:8080/Grades/getAllGrades`);
+        const grades = await data.json();
+        setGrades(grades);
+      } catch (error) {
+        console.error('Failed to fetch graded work:', error);
+      }
+    };
+
+    fetchGradedWork();
+  }, []);
+
   useEffect(() => {
     const fetchGradedWork = async () => {
       try {
@@ -58,7 +76,32 @@ function MarksList() {
     }
   }, [student]);
 
-  console.log(gradedWork);
+  useEffect(() => {
+    const fetchTotalGrades = async () => {
+      fetch(`http://localhost:8080/GroupGrades/getGroupGrades/${student.group_id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setTotalGrades(data.groupGrades);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+
+    if (student.group_id) {
+      console.log(student.group_id);
+      fetchTotalGrades();
+    }
+  }, [student]);
+
+  let internalMarks = gradedWork?.reduce((acc, item) => {
+    if (item.group_submitted_file.obtained_marks) {
+      return acc + item.group_submitted_file.obtained_marks;
+    }
+    return acc;
+  }, 0);
+
+  internalMarks = (internalMarks / 60) * grades.find((item) => item.grade_type === 'committee')?.marks;
 
   return (
     <Page title="Evaluated Assignments">
@@ -77,7 +120,7 @@ function MarksList() {
                 <TableCell>Assignment Name</TableCell>
                 <TableCell>Total Marks</TableCell>
                 <TableCell>Obtained Marks</TableCell>
-                <TableCell>View More</TableCell>
+                {/* <TableCell>View More</TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -85,8 +128,8 @@ function MarksList() {
                 <TableRow key={work.id}>
                   <TableCell>{work.title}</TableCell>
                   <TableCell>{work.total_points}</TableCell>
-                  <TableCell>{work.group_submitted_file.obtained_marks}</TableCell>
-                  <TableCell>
+                  <TableCell>{(work.group_submitted_file.obtained_marks / 20) * work.total_points}</TableCell>
+                  {/* <TableCell>
                     <Button variant="contained" color="primary">
                       <Link
                         style={{ color: 'inherit', textDecoration: 'none' }}
@@ -96,9 +139,38 @@ function MarksList() {
                         View More
                       </Link>
                     </Button>
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               ))}
+              <TableRow>
+                <TableCell colSpan={3} align="center">
+                  <strong>Total</strong>
+                </TableCell>
+              </TableRow>
+
+              {grades.find((item) => item.grade_type === 'committee') && (
+                <TableRow>
+                  <TableCell>Internal Marks</TableCell>
+                  <TableCell>{(grades.find((item) => item.grade_type === 'committee')?.marks / 100) * 200}</TableCell>
+                  <TableCell>{internalMarks}</TableCell>
+                </TableRow>
+              )}
+
+              {grades.find((item) => item.grade_type === 'supervisor') && (
+                <TableRow>
+                  <TableCell>Supervisor Marks</TableCell>
+                  <TableCell>{(grades.find((item) => item.grade_type === 'supervisor')?.marks / 100) * 200}</TableCell>
+                  <TableCell>{totalGrades?.supervisor_marks || 'Not Assigned'}</TableCell>
+                </TableRow>
+              )}
+
+              {grades.find((item) => item.grade_type === 'external') && (
+                <TableRow>
+                  <TableCell>External Marks</TableCell>
+                  <TableCell>{(grades.find((item) => item.grade_type === 'external')?.marks / 100) * 200}</TableCell>
+                  <TableCell>{totalGrades?.external_marks || 'Not Assigned'}</TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>

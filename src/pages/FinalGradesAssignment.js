@@ -45,63 +45,69 @@ function AssignFinalMarks() {
       .then((response) => response.json())
       .then((data) => {
         console.log('data', data);
-        if (data?.groupGrades?.supervisor_marks !== 0 || data?.groupGrades?.supervisor_marks !== null) {
+        if (data.message) {
+          return;
+        } else if (data?.groupGrades?.supervisor_marks !== 0 || data?.groupGrades?.supervisor_marks !== null) {
           setMarks(data?.groupGrades?.supervisor_marks);
           setIsEdit(true);
         }
       })
-      .catch((error) => console.error('Error fetching group marks:', error));
+      .catch((error) => {
+        setMarks(0);
+        setIsEdit(false);
+        console.error('Error fetching group marks:', error);
+      });
   }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     setIsLoading(true);
-    if (!isEdit) {
-      fetch('http://localhost:8080/GroupGrades/createGroupMarks', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ group_id: groupId, supervisor_marks: marks })
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          enqueueSnackbar('Create success', { variant: 'success' });
+    // if (!isEdit) {
+    fetch('http://localhost:8080/GroupGrades/createGroupMarks', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ group_id: groupId, supervisor_marks: marks })
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        enqueueSnackbar('Create success', { variant: 'success' });
 
-          setIsLoading(false);
-          setTimeout(() => {
-            navigate(PATH_DASHBOARD.general.groupsUnderSupervision);
-          }, 2000);
-        })
-        .catch((error) => {
-          setIsLoading(false);
-          console.error('Error assigning marks:', error);
-          setError(error);
-        });
-    } else {
-      fetch(`http://localhost:8080/GroupGrades/updateGroupMarks/${groupId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ supervisor_marks: marks })
+        setIsLoading(false);
+        setTimeout(() => {
+          navigate(PATH_DASHBOARD.general.groupsUnderSupervision);
+        }, 2000);
       })
-        .then((response) => response.json())
-        .then((data) => {
-          enqueueSnackbar('Update success', { variant: 'success' });
-          setIsLoading(false);
+      .catch((error) => {
+        setIsLoading(false);
+        console.error('Error assigning marks:', error);
+        setError(error);
+      });
+    // } else {
+    // fetch(`http://localhost:8080/GroupGrades/updateGroupMarks/${groupId}`, {
+    //   method: 'PUT',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify({ supervisor_marks: marks })
+    // })
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     enqueueSnackbar('Update success', { variant: 'success' });
+    //     setIsLoading(false);
 
-          setTimeout(() => {
-            navigate(PATH_DASHBOARD.general.groupsUnderSupervision);
-          }, 2000);
-        })
-        .catch((error) => {
-          setIsLoading(false);
-          console.error('Error assigning marks:', error);
-          setError(error);
-        });
-    }
+    //     setTimeout(() => {
+    //       navigate(PATH_DASHBOARD.general.groupsUnderSupervision);
+    //     }, 2000);
+    //   })
+    //   .catch((error) => {
+    //     setIsLoading(false);
+    //     console.error('Error assigning marks:', error);
+    //     setError(error);
+    //   });
+    // }
   };
 
   return (
